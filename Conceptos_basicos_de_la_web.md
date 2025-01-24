@@ -20,7 +20,8 @@ La web es una de las tecnologías más importantes de la actualidad, permitiendo
   - PUT: Actualizar recursos.
   - DELETE: Eliminar recursos.
 
-![Esquema de HTTP](https://via.placeholder.com/400x300.png?text=HTTP+Client-Server+Diagram)
+![image](https://github.com/user-attachments/assets/d0c4e060-98c8-473d-a20f-db26d386ba91)
+
 
 ---
 
@@ -33,7 +34,8 @@ La web es una de las tecnologías más importantes de la actualidad, permitiendo
   - Es el sistema que recibe la petición y devuelve una respuesta.
   - Ejemplos: Apache, Nginx, servidores en la nube.
 
-![Diagrama de cliente-servidor](https://via.placeholder.com/400x300.png?text=Cliente+%E2%86%94+Servidor)
+![image](https://github.com/user-attachments/assets/2024dc2e-f6f3-465e-8b20-37399daf635a)
+
 
 ---
 

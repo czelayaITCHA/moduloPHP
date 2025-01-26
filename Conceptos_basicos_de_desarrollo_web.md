@@ -1,5 +1,3 @@
-# Crear un archivo Markdown con el contenido generado
-contenido = """
 # Términos Clave en Desarrollo Web con PHP y Laravel
 
 El desarrollo web con PHP y Laravel incluye diversos conceptos fundamentales para construir aplicaciones modernas y eficientes. A continuación, se explican los términos clave y su aplicación en este framework.

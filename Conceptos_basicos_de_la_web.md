@@ -55,7 +55,8 @@ La web es una de las tecnologías más importantes de la actualidad, permitiendo
   - Lenguajes: Java, Python, PHP, JavaScript (Node.js).
   - Frameworks: Spring Boot, Django, Laravel, Express.js.
 
-![Esquema frontend-backend](https://via.placeholder.com/400x300.png?text=Frontend+%E2%80%93+Backend+Diagram)
+![image](https://github.com/user-attachments/assets/019dfa58-bba2-4239-80a5-8396bfe1a6d3)
+
 
 ---
 

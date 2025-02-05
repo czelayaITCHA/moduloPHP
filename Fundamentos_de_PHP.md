@@ -84,49 +84,149 @@ for ($i = 0; $i < 5; $i++) {
 
 ## 5. Programación Orientada a Objetos (POO) en PHP
 
-PHP es un lenguaje que soporta POO con clases, objetos, herencia y encapsulación.
+## 5.1. Introducción a la POO en PHP
+La Programación Orientada a Objetos (POO) es un paradigma que organiza el código en torno a "objetos", que son instancias de "clases". PHP soporta completamente la POO, lo que permite escribir código modular, reutilizable y más mantenible.
 
-### Clases y Objetos
+## 5.2. Conceptos Claves de la POO
+### a) Clases y Objetos
+Las clases son plantillas para crear objetos. Los objetos son instancias de una clase.
+
+**Ejemplo:**
 ```php
 class Persona {
-    private $nombre;
+    public $nombre;
+    public $edad;
     
-    public function __construct($nombre) {
+    public function __construct($nombre, $edad) {
         $this->nombre = $nombre;
+        $this->edad = $edad;
     }
     
     public function saludar() {
-        return "Hola, soy " . $this->nombre;
+        return "Hola, mi nombre es $this->nombre y tengo $this->edad años.";
     }
 }
 
-$persona = new Persona("Carlos");
-echo $persona->saludar();
+$persona1 = new Persona("Juan", 30);
+echo $persona1->saludar();
 ```
 
-### Herencia
+### b) Propiedades y Métodos
+Las propiedades son variables dentro de una clase, y los métodos son funciones dentro de una clase.
+
+### c) Encapsulamiento
+El encapsulamiento protege los datos de una clase. Se define con:
+- `public`: Accesible desde cualquier parte.
+- `private`: Accesible solo dentro de la clase.
+- `protected`: Accesible dentro de la clase y sus subclases.
+
+**Ejemplo:**
+```php
+class CuentaBancaria {
+    private $saldo;
+    
+    public function __construct($saldoInicial) {
+        $this->saldo = $saldoInicial;
+    }
+    
+    public function depositar($monto) {
+        $this->saldo += $monto;
+    }
+    
+    public function obtenerSaldo() {
+        return $this->saldo;
+    }
+}
+
+$cuenta = new CuentaBancaria(1000);
+$cuenta->depositar(500);
+echo "Saldo actual: " . $cuenta->obtenerSaldo();
+```
+
+### d) Herencia
+Permite que una clase herede propiedades y métodos de otra.
+
+**Ejemplo:**
 ```php
 class Empleado extends Persona {
-    private $salario;
+    private $puesto;
     
-    public function __construct($nombre, $salario) {
-        parent::__construct($nombre);
-        $this->salario = $salario;
+    public function __construct($nombre, $edad, $puesto) {
+        parent::__construct($nombre, $edad);
+        $this->puesto = $puesto;
     }
     
-    public function mostrarSalario() {
-        return "Mi salario es " . $this->salario;
+    public function obtenerPuesto() {
+        return $this->puesto;
     }
 }
 
-$empleado = new Empleado("Ana", 3000);
-echo $empleado->saludar();
-echo $empleado->mostrarSalario();
+$empleado = new Empleado("Ana", 25, "Desarrollador");
+echo $empleado->saludar() . " y soy " . $empleado->obtenerPuesto();
 ```
 
-**Ejercicio:** Crea una clase `Coche` con propiedades `marca` y `modelo`, y un método para mostrarlas.
+### e) Polimorfismo
+Permite redefinir métodos de una clase padre en una clase hija.
 
----
+**Ejemplo:**
+```php
+class Animal {
+    public function hacerSonido() {
+        return "Sonido genérico";
+    }
+}
+
+class Perro extends Animal {
+    public function hacerSonido() {
+        return "Guau Guau";
+    }
+}
+
+$miPerro = new Perro();
+echo $miPerro->hacerSonido();
+```
+
+### f) Interfaces
+Las interfaces definen métodos que una clase debe implementar.
+
+**Ejemplo:**
+```php
+interface Vehiculo {
+    public function acelerar();
+    public function frenar();
+}
+
+class Coche implements Vehiculo {
+    public function acelerar() {
+        return "El coche está acelerando";
+    }
+    
+    public function frenar() {
+        return "El coche está frenando";
+    }
+}
+
+$miCoche = new Coche();
+echo $miCoche->acelerar();
+```
+
+### g) Clases y Métodos Estáticos
+Los métodos estáticos pueden llamarse sin crear una instancia de la clase.
+
+**Ejemplo:**
+```php
+class Utilidades {
+    public static function mensaje() {
+        return "Este es un mensaje estático.";
+    }
+}
+
+echo Utilidades::mensaje();
+```
+
+## 5.3. Conclusión
+La POO en PHP permite escribir código estructurado, reutilizable y más fácil de mantener. Con estos conceptos básicos, puedes desarrollar aplicaciones más robustas y escalables.
+
 
 ## 6. Peticiones Asíncronas con Fetch en JavaScript
 

@@ -94,8 +94,8 @@ Las clases son plantillas para crear objetos. Los objetos son instancias de una 
 **Ejemplo:**
 ```php
 class Persona {
-    public $nombre;
-    public $edad;
+    private $nombre;
+    private $edad;
     
     public function __construct($nombre, $edad) {
         $this->nombre = $nombre;

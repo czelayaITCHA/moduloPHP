@@ -223,8 +223,140 @@ class Utilidades {
 
 echo Utilidades::mensaje();
 ```
+## 5.3 Ejemplo de cálculo de tabla de amortizaciones de un crédito
+### 5.3.1. Crear un formulario para definir parámetros para generar tabla de amortizaciones
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejemplo con POO en PHP</title>
+    <style>
+         table{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th,td{
+            border: 1px solid gray;
+            padding: 8px;
+            text-align: left;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        th{
+            background-color: #f4f4f4;
+        }
+    </style>
+    
+</head>
+<body>
+    <h2>Calculadora de créditos - POO en PHP</h2>
+    <form id="formCredito">
+        <table>
+            <tr>
+                <td>
+                    <label for="">Monto solicitado: </label>
+                    $<input type="number" id="monto" required>
+                </td>
+                <td>
+                    <label for="">Iva (13%): </label>
+                    $<input type="text" id="iva" readonly>
+                </td>
+                <td>
+                    <label for="">Monto Total: </label>
+                    $<input type="text" id="montoTotal" readonly>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="">Plazo (Meses):</label>
+                    <select id="plazo">
+                        <option value="36">36 Meses</option>
+                        <option value="60">60 Meses</option>
+                        <option value="72">72 Meses</option>
+                        <option value="96">96 Meses</option>
+                        <option value="120">120 Meses</option>
+                    </select>
+                </td>
+                <td colspan="2">
+                    <label for="">Interes Anual (%):</label>
+                    <input type="number" id="interesAnual" required>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: center;">
+                    <button type="submit">Calcular Crédito</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+    <h3>Tabla de Amortizaciones</h3>
+    <table id="tablaAmortizacion">
+        <thead>
+            <tr>
+                <th>Mes</th>
+                <th>Cuota</th>
+                <th>Interés</th>
+                <th>Abono a Capital</th>
+                <th>Saldo</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <script>
+        //obtenemos los id de los input
+        const montoInput = document.getElementById("monto");
+        const ivaInput = document.getElementById("iva");
+        const montoTotalInput = document.getElementById("montoTotal");
 
-## 5.3. Conclusión
+        montoInput.addEventListener("input", ()=>{
+            //calculo de iva y montoTotal
+            let monto = parseFloat(montoInput.value) || 0;
+            let iva = monto * 0.13;
+            let total = monto + iva;
+            //asignamos los valores a los input
+            ivaInput.value = iva.toFixed(2);
+            montoTotalInput.value = total.toFixed(2);
+        });
+
+        //manejando el evento submit para hacer la peticion
+        document.getElementById("formCredito").addEventListener(
+            "submit", async (event) =>{
+                event.preventDefault();
+                //obtenemos los valores de monto, plazo e interes
+                let montoTotal = parseFloat(montoTotalInput.value);
+                let meses = parseInt(document.getElementById("plazo").value);
+                let interesAnual = parseFloat(document.getElementById("interesAnual").value);
+
+                //hacemos la petición con fetch
+                const response = await fetch(`calcular_credito.php`,{
+                    method: 'POST',
+                    headers:{"Content-Type" : "application/json"},
+                    body: JSON.stringify({ montoTotal, meses, interesAnual })
+                });
+                const amortizaciones = await response.json();
+                const tbody = document.querySelector("#tablaAmortizacion tbody");
+                tbody.innerHTML = "";
+                amortizaciones.forEach(item =>{
+                    let fila = document.createElement("tr");
+                    fila.innerHTML = `
+                        <td>${item.mes}</td>
+                        <td>$${item.cuota.toFixed(2)}</td>
+                        <td>$${item.interes.toFixed(2)}</td>
+                        <td>$${item.abonoCapital.toFixed(2)}</td>
+                        <td>$${item.saldo.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(fila);
+                });
+            }
+        )
+    </script>
+</body>
+</html>
+```
+
+## 5.4. Conclusión
 La POO en PHP permite escribir código estructurado, reutilizable y más fácil de mantener. Con estos conceptos básicos, puedes desarrollar aplicaciones más robustas y escalables.
 
 

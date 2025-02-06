@@ -356,6 +356,71 @@ echo Utilidades::mensaje();
 </html>
 ```
 
+Ahora crear el archivo calcular_credito.php y crear la lógica para realizar los cálculos de la tabla de amortizaciones
+```php
+<?php
+    class Credito{
+        private $montoTotal;
+        private $interesMensual;
+        private $plazo;
+
+        //constructor de la clase
+        public function __construct($montoTotal, $interesAnual, $plazo){
+            $plazosValidos = [24,36,60,72,96,120];
+            if(!in_array($plazo,$plazosValidos)){
+                throw new Exception("Plazo no válido");
+            }
+            //inicializamos los atributos
+            $this->montoTotal = $montoTotal;
+            $this->interesMensual = ($interesAnual / 100) / 12;
+            $this->plazo = $plazo;
+        }
+
+        //funcion para calcular cuota
+        public function calcularCuota(){
+            return ($this->montoTotal * $this->interesMensual) / 
+            (1 - pow(1 + $this->interesMensual,-$this->plazo));
+        }
+        //función para generar la tabla de amortizaciones
+        public function generarTablaAmortizacion(){
+            $cuota = $this->calcularCuota();
+            $saldo = $this->montoTotal;
+            $tabla = [];
+            for($mes=1; $mes <= $this->plazo; $mes++){
+                $interes = $saldo * $this->interesMensual;
+                $abonoCapital = $cuota - $interes;
+                $saldo -= $abonoCapital;
+
+                $tabla[] = [
+                    "mes" => $mes,
+                    "cuota" => $cuota,
+                    "interes" => $interes,
+                    "abonoCapital" => $abonoCapital,
+                    "saldo" => max($saldo,0)
+                ];
+            }
+
+            return $tabla;
+        }
+    } //final de la clase
+
+    //leer el JSON de la peticion
+    $input = json_decode(file_get_contents("php://input"),true);
+    $montoTotal = $input["montoTotal"];
+    $meses = $input["meses"];
+    $interesAnual = $input["interesAnual"]; 
+    
+    try{
+        //creamos la instancia de la clase Credito
+        $credito = new Credito($montoTotal,$interesAnual,$meses);
+        $tabla = $credito->generarTablaAmortizacion();
+        echo json_encode($tabla);
+    }catch(Exception $e){
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+?>
+```
+
 ## 5.4. Conclusión
 La POO en PHP permite escribir código estructurado, reutilizable y más fácil de mantener. Con estos conceptos básicos, puedes desarrollar aplicaciones más robustas y escalables.
 

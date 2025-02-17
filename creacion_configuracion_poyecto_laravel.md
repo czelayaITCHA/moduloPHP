@@ -94,3 +94,123 @@ php artisan make:migration create_ordenes_table
 ```bash
 php artisan make:migration create_detalle_ordenes_table
 ```
+## Definir estructura de cada migración (método up)
+
+### 1.- Estructura de migracion para marcas
+```php
+  public function up(): void
+    {
+        Schema::create('marcas', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre',80)->nullable(false)->unique();
+            $table->timestamps();
+        });
+    }
+```
+### 2.- Estructura de migracion para categorias
+```php
+ public function up(): void
+    {
+        Schema::create('categorias', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre',80)->nullable(false)->unique();
+            $table->timestamps();
+        });
+    }
+```
+### 3.- Estructura de migracion para productos
+```php
+public function up(): void
+    {
+        Schema::create('productos', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre',80)->nullable(false);
+            $table->string('descripcion',200);
+            $table->decimal('precio',8,2);
+            $table->decimal('stock',8,2);
+            $table->string('modelo',50)->nullable(true);
+            $table->string('estado',1)->default('D');
+            //creando las llaves foráneas
+            $table->unsignedBigInteger('marca_id');
+            $table->foreign('marca_id')->references('id')->on('marcas');
+            $table->unsignedBigInteger('categoria_id');
+            $table->foreign('categoria_id')->references('id')->on('categorias');
+            $table->timestamps();
+        });
+    }
+```
+### 4.- Estructura de migracion para imagenes
+```php
+ public function up(): void
+    {
+        Schema::create('imagenes', function (Blueprint $table) {
+            $table->id();
+            $table->string('nombre',150);
+            $table->unsignedBigInteger('producto_id');
+            $table->foreign('producto_id')->references('id')->on('productos');
+            $table->timestamps();
+        });
+    }
+```
+### 5.- Estructura de migracion para ordenes
+```php
+public function up(): void
+    {
+        Schema::create('ordenes', function (Blueprint $table) {
+            $table->id();
+            $table->string('correlativo',10)->unique();
+            $table->date('fecha');
+            $table->date('fecha_despacho')->nullable(true);
+            $table->string('estado',1)->default('R');
+            $table->decimal('total',10,2)->default(0.0);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->timestamps();
+        });
+    }
+```
+### 6.- Estructura de migracion para detalle_ordenes
+```php
+ public function up(): void
+    {
+        Schema::create('detalle_ordenes', function (Blueprint $table) {
+            $table->id();
+            $table->decimal('cantidad',8,2);
+            $table->decimal('precio',8,2);
+            $table->unsignedBigInteger('producto_id');
+            $table->foreign('producto_id')->references('id')->on('productos');
+            $table->unsignedBigInteger('orden_id');
+            $table->foreign('orden_id')->references('id')->on('ordenes');
+            $table->timestamps();
+        });
+    }
+```
+Cambiar el nombre de la tabla en el método down
+```php
+ public function down(): void
+    {
+        Schema::dropIfExists('detalle_ordenes');
+    }
+```
+## Ejecutar migraciones pendientes
+```bash
+php artisan migrate
+```
+Verificar estado de las migraciones
+```bash
+php artisan migrate:status
+```
+En caso de no existir errores verificar que se hayan creado las tablas en la base de datos ordersDB
+
+## ¿Qué es artisan?
+Artisan es la interfaz de línea de comandos (CLI) que viene incluida con Laravel. Es una herramienta muy útil que te permite realizar diversas tareas comunes en el desarrollo de aplicaciones Laravel de manera rápida y sencilla.
+Para usar Artisan, simplemente abre la terminal en la raíz de tu proyecto Laravel y ejecuta el comando php artisan. Esto te mostrará una lista de todos los comandos disponibles. Luego, puedes ejecutar un comando específico escribiendo php artisan nombre_del_comando.
+
+Algunos ejemplos de comandos Artisan comunes son:
+
+* php artisan make:model NombreDelModelo: Crea un nuevo modelo.
+* php artisan migrate: Ejecuta las migraciones pendientes.
+* php artisan serve: Inicia el servidor de desarrollo.
+* php artisan tinker: Abre una consola interactiva para probar código Laravel.
+  
+En resumen, Artisan es una herramienta esencial para cualquier desarrollador de Laravel. Te ayuda a agilizar el desarrollo, automatizar tareas y mantener tu código organizado y consistente

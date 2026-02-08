@@ -28,7 +28,7 @@ La estructura de la tabla de productos debe quedar como se muestra en la imagen 
 ## 2. Crear estructura de proyecto en visual studio code como se muestra en la siguiente imagen, debe crearse en la carpeta **WWW** de WampServer
 <img width="313" height="167" alt="image" src="https://github.com/user-attachments/assets/82e34db4-3d0c-465a-8bdc-189519b9989e" />
 
-## 3. Crear clase en la carpeta config para definir conexión con la base de datos, llamar al archvi Database.php 
+## 3. Crear clase en la carpeta config para definir conexión con la base de datos, llamar al archvivo **Database.php**
 ```php
 <?php
 class Database {

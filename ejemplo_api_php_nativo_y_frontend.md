@@ -145,3 +145,118 @@ class ProductoDAO {
 }
 
 ```
+## 6. En la carpeta **controllers**, crear el archivo **ProductoController.php**, para crear los endpoints de la API
+```php
+<?php
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Content-Type: application/json");
+
+if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
+    http_response_code(200);
+    exit;
+}
+
+require_once __DIR__ . '/../config/Database.php';
+require_once __DIR__ . '/../dao/ProductoDAO.php';
+require_once __DIR__ . '/../models/Producto.php';
+
+class ProductoController {
+    private ProductoDAO $dao;
+
+    public function __construct(ProductoDAO $dao) {
+        $this->dao = $dao;
+    }
+
+    public function index() {
+        echo json_encode($this->dao->findAll());
+    }
+
+    public function show(int $id) {
+        $producto = $this->dao->findById($id);
+        if (!$producto) {
+            http_response_code(404);
+            echo json_encode(["message" => "Producto no encontrado"]);
+            return;
+        }
+        echo json_encode($producto);
+    }
+
+    public function store() {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        $producto = new Producto(
+            null,
+            $data["nombre"],
+            $data["descripcion"],
+            (float)$data["precio"],
+            (int)$data["stock"]
+        );
+
+        if ($this->dao->create($producto)) {
+            http_response_code(201);
+            echo json_encode(["message" => "Producto creado"]);
+        }
+    }
+
+    public function update(int $id) {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        $producto = new Producto(
+            $id,
+            $data["nombre"],
+            $data["descripcion"],
+            (float)$data["precio"],
+            (int)$data["stock"]
+        );
+
+        if ($this->dao->update($id, $producto)) {
+            echo json_encode(["message" => "Producto actualizado"]);
+        }
+    }
+
+    public function destroy(int $id) {
+        if ($this->dao->delete($id)) {
+            echo json_encode(["message" => "Producto eliminado"]);
+        }
+    }
+}
+
+/* ==========================
+   BOOTSTRAP + ROUTING
+   ========================== */
+
+$db = new Database();
+$conn = $db->connect();
+$dao = new ProductoDAO($conn);
+$controller = new ProductoController($dao);
+
+$method = $_SERVER["REQUEST_METHOD"];
+$uri = explode("/", trim($_SERVER["REQUEST_URI"], "/"));
+
+// Ajusta el índice según la carpeta donde esté el proyecto
+$id = $uri[count($uri) - 1];
+$id = is_numeric($id) ? (int)$id : null;
+
+switch ($method) {
+    case "GET":
+        $id ? $controller->show($id) : $controller->index();
+        break;
+
+    case "POST":
+        $controller->store();
+        break;
+
+    case "PUT":
+        $controller->update($id);
+        break;
+
+    case "DELETE":
+        $controller->destroy($id);
+        break;
+}
+
+```
+
+## 7. Probar API en Postman

@@ -258,5 +258,10 @@ switch ($method) {
 }
 
 ```
-
-## 7. Probar API en Postman
+## 7. Crear el archivo .htaccess a nivel de carpeta principal
+```xml
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^ index.php [QSA,L]
+```
+## 8. Probar API en Postman

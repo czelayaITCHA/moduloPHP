@@ -265,3 +265,24 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ index.php [QSA,L]
 ```
 ## 8. Probar API en Postman
+
+## 9. Crear el proyecto frontend
+### 9.1 Instalar la version 22 de node
+Instalar **nvm** version 1.2.2
+instalar la version 22.18.0 LTS de node 
+```js
+node install 22.18.0
+```
+### 9.2 Crear proyecto react
+
+<img width="702" height="364" alt="image" src="https://github.com/user-attachments/assets/8f9a2276-dac6-434b-9fb5-8bd38e077ccf" />
+
+Se crea una carpeta con el nombre del proyecto, en este caso **products-app** 
+cambiar se a la carpeta products-app
+instale dependencias
+```js
+npm install
+```
+
+### 9.2 integrar tailwindcss al proyecto react
+

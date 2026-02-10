@@ -268,13 +268,21 @@ RewriteRule ^ index.php [QSA,L]
 
 ## 9. Crear el proyecto frontend
 ### 9.1 Instalar la version 22 de node
-Instalar **nvm** version 1.2.2
-instalar la version 22.18.0 LTS de node 
+* Instalar **nvm** version 1.2.2 <br>
+* Instalar la version 22.18.0 LTS de node 
 ```js
 node install 22.18.0
 ```
-### 9.2 Crear proyecto react
+verifique que tiene instalado la versión 22 de node, con la siguiente linea de comandos:
+<img width="333" height="40" alt="image" src="https://github.com/user-attachments/assets/af243f71-5ad0-4d27-b555-e1a4f039140f" />
 
+### 9.2 Crear proyecto react
+Siga los pasos de la documentación oficial de react https://tailwindcss.com/docs/installation/using-vite
+- crear el proyecto en la linea de comandos
+  ```js
+  npm create vite@latest products-app -- --template react
+  ```
+- 
 <img width="702" height="364" alt="image" src="https://github.com/user-attachments/assets/8f9a2276-dac6-434b-9fb5-8bd38e077ccf" />
 
 Se crea una carpeta con el nombre del proyecto, en este caso **products-app** 

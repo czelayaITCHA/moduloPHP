@@ -312,8 +312,11 @@ npm install
 ### 9.3 Crear las carpetas **services** y **components** dentro de **src**
 <img width="248" height="501" alt="image" src="https://github.com/user-attachments/assets/ab9a5de4-ddde-4210-a739-b7c440c9449b" />
 
-
-### 9.3 crear el servicio serviceProducto.js dentro de la carpeta service
+### 9.4 Instalar dependencias de react-icons y SweatAlert2
+```js
+npm install react-icons sweetalert2
+```
+### 9.5 crear el servicio serviceProducto.js dentro de la carpeta service
 ```js
 const URL_BASE = "http://localhost/products-api/controllers/ProductoController.php";
 
@@ -357,7 +360,7 @@ export const deleteProduct = async (id) => {
   return resp.json();
 };
 ```
-### 9.4 Crear el componente ProductoModal.jsx, dentro de la carpeta components
+### 9.6 Crear el componente ProductoModal.jsx, dentro de la carpeta components
 
 ```js
 import { useEffect, useState } from "react";
@@ -456,7 +459,7 @@ export default function ProductoModal({ open, onClose, onSave, producto }) {
 }
 
 ```
-### 9.5 crear el componente ProductoTable.jsx, dentro de la carpeta components 
+### 9.7 crear el componente ProductoTable.jsx, dentro de la carpeta components 
 
 ```js
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -528,7 +531,7 @@ export default function ProductoTable({ productos, onEdit, onDelete }) {
 }
 ```
 
-### 9.6 crear el archivo Productos.jsx en la carpeta components
+### 9.8 crear el archivo Productos.jsx en la carpeta components
  ```js
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -636,7 +639,7 @@ export default function Productos() {
 }
 
 ```
-### 9.7 inyectar el componente Productos.jsx en el componente principal App.jsx
+### 9.9 inyectar el componente Productos.jsx en el componente principal App.jsx
 ```js
 import './App.css'
 import Productos from './components/Productos'
@@ -647,3 +650,5 @@ function App() {
 
 export default App
 ``` 
+## 10 Resultado 
+<img width="959" height="340" alt="image" src="https://github.com/user-attachments/assets/092f2763-65d0-4cfd-af48-0a2d02d823ba" />

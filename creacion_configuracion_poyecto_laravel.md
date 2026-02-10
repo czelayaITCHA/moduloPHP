@@ -3,9 +3,10 @@
 ## Introducción
 Laravel 12 es la última versión del popular framework de desarrollo web en PHP, diseñado para facilitar la creación de aplicaciones web robustas y eficientes. Con una sintaxis elegante y herramientas integradas, Laravel simplifica tareas comunes como la autenticación, el enrutamiento y la gestión de bases de datos, permitiendo a los desarrolladores centrarse en la funcionalidad específica de sus aplicaciones.
 ## Requisitos para crear proyecto en laravel 12
-### 1.- Versión de PHP >= 8.3
-![image](https://github.com/user-attachments/assets/0885b363-dc36-4e7e-adbb-f66fe62fd80b)
-### 2.- composer
+### 1.- Versión de PHP >= 8.2
+<img width="673" height="141" alt="image" src="https://github.com/user-attachments/assets/0142d494-4a84-4a02-b699-b8b61fafb331" />
+### 2.- instalar composer 
+- Descarga composer si no lo tienes instalado de https://getcomposer.org/
 ![image](https://github.com/user-attachments/assets/0db204f0-a92a-4a78-8f76-541c22327a97)
 ### 1.- nodeJS
 ![image](https://github.com/user-attachments/assets/56c29391-7e65-499b-bbb7-1932f07a9b64)

@@ -11,17 +11,17 @@ Laravel 12 es la última versión del popular framework de desarrollo web en PHP
 
 - Descarga composer si no lo tienes instalado de https://getcomposer.org/ sigue los pasos de instalación y luego verifica la versión instalada (es posible que se necesite reiniciar el sistema)
   
-![image](https://github.com/user-attachments/assets/0db204f0-a92a-4a78-8f76-541c22327a97)
+<img width="611" height="103" alt="image" src="https://github.com/user-attachments/assets/93648cc7-ac07-438a-ae06-a831f31b3622" />
 
-### 1.- nodeJS
-![image](https://github.com/user-attachments/assets/56c29391-7e65-499b-bbb7-1932f07a9b64)
+### 3.- nodeJS
+<img width="242" height="63" alt="image" src="https://github.com/user-attachments/assets/617fe260-ee6f-4341-8093-3466eafbcc63" />
 
 ## Crear nuevo proyecto laravel
 Existen dos formas de crear un proyecto en laravel, usando composer que para la práctica usaremos esta opción y la otra es usando el instalador de Laravel para opciones mas personalizadas del proyecto 
 ### 1.- Crear proyecto con composer
 Creamos el proyecto con el gestor de dependencias de Laravel
 ```bash
-composer create-project laravel/laravel orders-app
+composer create-project laravel/laravel:^12.0 shop-app
 ```
 
 ### 2.- Usando el instalador de Laravel
@@ -42,29 +42,61 @@ laravel new nombre-del-proyecto
 ```
 Con este comando se crea una nueva aplicación con el instalador global de laravel
 ## Estructura e inicio del proyecto
-Cuando se crea el proyecto, Laravel 11 ejecuta las migraciones que trae por defecto para sqlite, como se muestra en la siguiente imágen
-![image](https://github.com/user-attachments/assets/c1b23301-029d-4c84-b95c-d68d375bc17e)
+Cuando se crea el proyecto, Laravel 12 ejecuta las migraciones que trae por defecto para sqlite, como se muestra en la siguiente imágen:
+<img width="1079" height="690" alt="image" src="https://github.com/user-attachments/assets/67589e94-2058-49ea-a25f-b370cf7f4a78" />
 ### abrir proyecto con Visual Studio Code
-![image](https://github.com/user-attachments/assets/101ebbb0-2618-4f25-a8fc-9d1db075ea01)
+<img width="282" height="69" alt="image" src="https://github.com/user-attachments/assets/54f59923-ab2f-4526-9b80-dc7a17d0866d" />
+
 A continuación se muestra la estructura del proyecto
-![image](https://github.com/user-attachments/assets/7e9145ec-94ba-4b73-a6ac-966d7955a6c4)
+
+<img width="1919" height="1032" alt="image" src="https://github.com/user-attachments/assets/5618c904-fb9b-41f0-be05-d82257fa3cda" />
+
 
 ### iniciar proyecto con el servidor de desarrollo
 #### 1.- iniciar servidor de desarrollo
-![image](https://github.com/user-attachments/assets/a39e1e26-72ea-4721-a876-39a024952206)
+<img width="1267" height="156" alt="image" src="https://github.com/user-attachments/assets/58d2a0a3-a9cd-41f1-bdec-156a33049ad0" />
+
 
 #### 2.- Acceder a la aplicación desde el navegador
-![image](https://github.com/user-attachments/assets/e170181f-75b7-4aa4-bfaa-f32261234dc3)
+<img width="1909" height="768" alt="image" src="https://github.com/user-attachments/assets/a7d2102b-1572-47dc-93bd-1f7da6601f3f" />
 
 ## Configuración de conexión
 Editar el archivo .env y establecer parámetros de conexión para la base de datos en MySQL
 
-![image](https://github.com/user-attachments/assets/374331a9-ce6e-4393-95ce-8cf0df6c00c4)
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=shop_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
 ## Especificar el motor de almacenamiento que se utilizará para las tablas de la base de datos MySQL.
 Editar el archivo config/database.php
 
-![image](https://github.com/user-attachments/assets/a055ef7d-68be-4531-afd7-5d231aab5bef)
+```bash
+'mysql' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE', 'laravel'),
+            'username' => env('DB_USERNAME', 'root'),
+            'password' => env('DB_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => 'InnoDB',
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+```
 ## Ejecutar la migraciones
 ```bash
 php artisan migrate

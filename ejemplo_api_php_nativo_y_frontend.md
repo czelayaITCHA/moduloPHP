@@ -583,4 +583,13 @@ export default function Productos() {
 
 ```
 ### 9.7 inyectar el componente Productos.jsx en el componente principal App.jsx
+```js
+import './App.css'
+import Productos from './components/Productos'
+function App() {
+  return <Productos />;
 
+}
+
+export default App
+``` 

@@ -1,9 +1,9 @@
 # Creación y Configuración inicial de proyecto laravel 11
 
 ## Introducción
-Laravel 11 es la última versión del popular framework de desarrollo web en PHP, diseñado para facilitar la creación de aplicaciones web robustas y eficientes. Con una sintaxis elegante y herramientas integradas, Laravel simplifica tareas comunes como la autenticación, el enrutamiento y la gestión de bases de datos, permitiendo a los desarrolladores centrarse en la funcionalidad específica de sus aplicaciones.
-## Requisitos para crear proyecto en laravel 11
-### 1.- Versión de PHP >= 8.2
+Laravel 12 es la última versión del popular framework de desarrollo web en PHP, diseñado para facilitar la creación de aplicaciones web robustas y eficientes. Con una sintaxis elegante y herramientas integradas, Laravel simplifica tareas comunes como la autenticación, el enrutamiento y la gestión de bases de datos, permitiendo a los desarrolladores centrarse en la funcionalidad específica de sus aplicaciones.
+## Requisitos para crear proyecto en laravel 12
+### 1.- Versión de PHP >= 8.3
 ![image](https://github.com/user-attachments/assets/0885b363-dc36-4e7e-adbb-f66fe62fd80b)
 ### 2.- composer
 ![image](https://github.com/user-attachments/assets/0db204f0-a92a-4a78-8f76-541c22327a97)

@@ -271,7 +271,7 @@ RewriteRule ^ index.php [QSA,L]
 * Instalar **nvm** version 1.2.2 <br>
 * Instalar la version 22.18.0 LTS de node 
 ```js
-node install 22.18.0
+nvm install 22.18.0
 ```
 verifique que tiene instalado la versión 22 de node, con la siguiente linea de comandos:
 <img width="333" height="40" alt="image" src="https://github.com/user-attachments/assets/af243f71-5ad0-4d27-b555-e1a4f039140f" />

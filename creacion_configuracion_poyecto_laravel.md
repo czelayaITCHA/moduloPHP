@@ -1,4 +1,4 @@
-# Creación y Configuración inicial de proyecto laravel 11
+# Creación y Configuración inicial de proyecto laravel 12
 
 ## Introducción
 Laravel 12 es la última versión del popular framework de desarrollo web en PHP, diseñado para facilitar la creación de aplicaciones web robustas y eficientes. Con una sintaxis elegante y herramientas integradas, Laravel simplifica tareas comunes como la autenticación, el enrutamiento y la gestión de bases de datos, permitiendo a los desarrolladores centrarse en la funcionalidad específica de sus aplicaciones.

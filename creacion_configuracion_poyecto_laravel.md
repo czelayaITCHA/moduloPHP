@@ -107,7 +107,7 @@ php artisan migrate:status
 ```
 Revisar tablas en la base de datos, con phpMyadmin
 
-## Crear migraciones para la base de datos ordersDB, que se utilizarán en el proyecto de clase
+## Crear migraciones para la base de datos shop_db, que se utilizarán en el proyecto de clase
 ### 1.- Generar archivo de migracion para tabla de marcas
 ```bash
 php artisan make:migration create_marcas_table
@@ -120,17 +120,17 @@ php artisan make:migration create_categorias_table
 ```bash
 php artisan make:migration create_productos_table
 ```
-### 4.- Generar archivo de migracion para tabla de imagenes
+### 4.- Generar archivo de migracion para tabla de orders
 ```bash
-php artisan make:migration create_imagenes_table
+php artisan make:migration create_orders_table
 ```
-### 5.- Generar archivo de migracion para tabla de ordenes
+### 5.- Generar archivo de migracion para tabla de order_items
 ```bash
-php artisan make:migration create_ordenes_table
+php artisan make:migration create_order_items_table
 ```
-### 6.- Generar archivo de migracion para tabla de detalle_ordenes
+### 6.- Generar archivo de migracion para tabla de pagos
 ```bash
-php artisan make:migration create_detalle_ordenes_table
+php artisan make:migration create_pagos_table
 ```
 ## Definir estructura de cada migración (método up)
 
@@ -164,10 +164,10 @@ public function up(): void
             $table->id();
             $table->string('nombre',80)->nullable(false);
             $table->string('descripcion',200);
-            $table->decimal('precio',8,2);
-            $table->decimal('stock',8,2);
+            $table->decimal('precio',10,2);
+            $table->decimal('stock',10,2);
             $table->string('modelo',50)->nullable(true);
-            $table->string('estado',1)->default('D');
+            $table->boolean('activo')->default(true);
             //creando las llaves foráneas
             $table->unsignedBigInteger('marca_id');
             $table->foreign('marca_id')->references('id')->on('marcas');
@@ -190,31 +190,35 @@ public function up(): void
         });
     }
 ```
-### 5.- Estructura de migracion para ordenes
+### 5.- Estructura de migracion para orders
 ```php
 public function up(): void
     {
-        Schema::create('ordenes', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->string('correlativo',10)->unique();
             $table->date('fecha');
             $table->date('fecha_despacho')->nullable(true);
             $table->string('estado',1)->default('R');
-            $table->decimal('total',10,2)->default(0.0);
+            $table->decimal('subtotal', 10, 2);
+            $table->decimal('impuesto', 10, 2)->default(0);
+            $table->decimal('total', 10, 2);
+            $table->enum('estado', ['PENDIENTE','PAGADA','CANCELADA','REEMBOLSADA'])->default('PENDIENTE');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
 ```
-### 6.- Estructura de migracion para detalle_ordenes
+### 6.- Estructura de migracion para order_items
 ```php
  public function up(): void
     {
-        Schema::create('detalle_ordenes', function (Blueprint $table) {
+        Schema::create('order_items', function (Blueprint $table) {
             $table->id();
-            $table->decimal('cantidad',8,2);
-            $table->decimal('precio',8,2);
+            $table->integer('cantidad');
+            $table->decimal('precio_unitario', 10, 2);
+            $table->decimal('subtotal', 10, 2);
             $table->unsignedBigInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('productos');
             $table->unsignedBigInteger('orden_id');
@@ -223,11 +227,29 @@ public function up(): void
         });
     }
 ```
+### 7.- Estructura de migracion para pagos
+```php
+ public function up(): void
+    {
+        Schema::create('order_items', function (Blueprint $table) {
+            $table->id();
+            $table->enum('metodo', ['STRIPE','PAYPAL','TRANSFERENCIA']);
+            $table->string('referencia', 50);
+            $table->decimal('monto', 10, 2);
+            $table->enum('estado', ['PENDIENTE', 'APROBADO','RECHAZADO'])->default('PENDIENTE');
+            $table->json('respuesta_pasarela')->nullable(); 
+            $table->unsignedBigInteger('pago_id');
+            $table->foreign('pago_id')->references('id')->on('pagos');
+            $table->timestamps();
+        });
+    }
+```
+
 Cambiar el nombre de la tabla en el método down
 ```php
  public function down(): void
     {
-        Schema::dropIfExists('detalle_ordenes');
+        Schema::dropIfExists('order_items');
     }
 ```
 ## Ejecutar migraciones pendientes

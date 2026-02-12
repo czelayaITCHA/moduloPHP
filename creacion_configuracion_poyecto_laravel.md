@@ -223,8 +223,8 @@ public function up(): void
             $table->decimal('subtotal', 10, 2);
             $table->unsignedBigInteger('producto_id');
             $table->foreign('producto_id')->references('id')->on('productos');
-            $table->unsignedBigInteger('orden_id');
-            $table->foreign('orden_id')->references('id')->on('ordenes');
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
         });
     }
@@ -233,15 +233,15 @@ public function up(): void
 ```php
  public function up(): void
     {
-        Schema::create('order_items', function (Blueprint $table) {
+        Schema::create('pagos', function (Blueprint $table) {
             $table->id();
             $table->enum('metodo', ['STRIPE','PAYPAL','TRANSFERENCIA']);
             $table->string('referencia', 50);
             $table->decimal('monto', 10, 2);
             $table->enum('estado', ['PENDIENTE', 'APROBADO','RECHAZADO'])->default('PENDIENTE');
             $table->json('respuesta_pasarela')->nullable(); 
-            $table->unsignedBigInteger('pago_id');
-            $table->foreign('pago_id')->references('id')->on('pagos');
+            $table->unsignedBigInteger('order_id');
+            $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
         });
     }
@@ -251,7 +251,7 @@ Cambiar el nombre de la tabla en el método down
 ```php
  public function down(): void
     {
-        Schema::dropIfExists('order_items');
+        Schema::dropIfExists('pagos');
     }
 ```
 ## Ejecutar migraciones pendientes

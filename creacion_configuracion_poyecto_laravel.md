@@ -119,15 +119,19 @@ php artisan make:migration create_categorias_table
 ```bash
 php artisan make:migration create_productos_table
 ```
-### 4.- Generar archivo de migracion para tabla de orders
+### 4.- Generar archivo de migracion para tabla de imagenes
+```bash
+php artisan make:migration create_imagenes_table
+```
+### 5.- Generar archivo de migracion para tabla de orders
 ```bash
 php artisan make:migration create_orders_table
 ```
-### 5.- Generar archivo de migracion para tabla de order_items
+### 6.- Generar archivo de migracion para tabla de order_items
 ```bash
 php artisan make:migration create_order_items_table
 ```
-### 6.- Generar archivo de migracion para tabla de pagos
+### 7.- Generar archivo de migracion para tabla de pagos
 ```bash
 php artisan make:migration create_pagos_table
 ```
@@ -198,7 +202,6 @@ public function up(): void
             $table->string('correlativo',10)->unique();
             $table->date('fecha');
             $table->date('fecha_despacho')->nullable(true);
-            $table->string('estado',1)->default('R');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('impuesto', 10, 2)->default(0);
             $table->decimal('total', 10, 2);

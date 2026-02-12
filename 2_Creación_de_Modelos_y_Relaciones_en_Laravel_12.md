@@ -421,7 +421,7 @@ En esta guía aprendiste:
 - Implementación completa de los modelos para Shop-APP.
 - Ejemplos prácticos de uso.
 
-** Nota: Desarrollar guía en el proyecto de clase, subir evidencia**
+**Nota: Desarrollar guía en el proyecto de clase, subir evidencia**
 ---
 
 --> Base sólida para continuar con controladores y probar la API

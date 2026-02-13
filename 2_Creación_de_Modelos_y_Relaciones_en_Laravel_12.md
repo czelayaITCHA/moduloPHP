@@ -313,7 +313,7 @@ class Order extends Model
 ```php
 class OrderItem extends Model
 {
-    protected $fillable = "order_items";
+    protected $table = "order_items";
 
     protected $fillable = [
         'cantidad',

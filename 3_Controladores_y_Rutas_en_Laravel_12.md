@@ -501,4 +501,89 @@ class MarcaController extends Controller
 ## 5 Hacer pruebas en postman
 
 El controlador anterior expone los diferentes endpoints para crear un CRUD de la tabla marcas y se pueden consumir por un proyecto frontend
+
+## 6. Programar controlador ProductoController, con gestión de imágenes
+
+Incluye:
+* Validaciones robustas
+* Subida de múltiples imágenes
+* Eliminación física del storage
+* Prevención de eliminación si existen órdenes
+* Uso obligatorio de transacciones
+
+### 6.1 Importar modelos y espacios de nombres necesarios
+```php
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Producto;
+use App\Models\Imagen;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+
+class ProductoController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
+```
+### 6.2 Programar el método index() para obtener la colección de productos con sus relaciones
+```php
+public function index()
+    {
+        try {
+            $productos = Producto::with(['marca','categoria','imagenes'])
+                ->orderBy('id','desc')
+                ->get();
+
+            return response()->json($productos, 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al obtener la lista de productos.'
+            ], 500);
+        }
+    }
+```
 ---

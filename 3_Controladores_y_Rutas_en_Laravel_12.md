@@ -72,19 +72,120 @@ Route::apiResource('orders', OrderController::class);
 
 ---
 
-# 4️⃣ MarcaController Completo
+# 4️ Programar controlador MarcaController Completo
 
+Al crear el controlador con **php artisan make:controller MarcaController --api***, se crea la estructura básica de un controlador 
 ```php
+<?php
+
 namespace App\Http\Controllers;
 
-use App\Models\Marca;
 use Illuminate\Http\Request;
 
 class MarcaController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-         try{
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        // 
+    }
+
+}
+
+```
+## 4.1 importar espacios de nombres necesarios para validaciones y el modelo Marca
+```php
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Models\Marca; 
+
+class MarcaController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        // 
+    }
+
+}
+```
+## 4.2 Programar la lógica del método index, para obtener la colección o lista de marcas registradas en la base de datos
+```php
+ public function index()
+    {
+        try{
             // Forma básica
             // $marcas = Marca::all();
 
@@ -95,7 +196,6 @@ class MarcaController extends Controller
             // $marcas = Marca::orderBy('id','desc')->paginate(10);
 
             return response()->json([
-                'estado' => true,
                 'marcas' => $marcas
             ], 200);
         }catch(\Exception $e){
@@ -105,82 +205,5 @@ class MarcaController extends Controller
             ],500);
         }
     }
-
-    public function store(Request $request)
-    {
-        try {
-            $request->validate([
-                'nombre' => 'required|unique:marcas,nombre|max:80'
-            ]);
-
-            $marca = Marca::create($request->all());
-
-            return response()->json([
-                'message' => 'Marca creada correctamente',
-                'data' => $marca
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al crear marca',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function show($id)
-    {
-        try {
-            $marca = Marca::findOrFail($id);
-
-            return response()->json($marca, 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Marca no encontrada',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function update(Request $request, $id)
-    {
-        try {
-            $marca = Marca::findOrFail($id);
-
-            $request->validate([
-                'nombre' => 'required|unique:marcas,nombre,' . $id
-            ]);
-
-            $marca->update($request->all());
-
-            return response()->json([
-                'message' => 'Marca actualizada',
-                'data' => $marca
-            ], 202);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al actualizar',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function destroy($id)
-    {
-        try {
-            $marca = Marca::findOrFail($id);
-            $marca->delete();
-
-            return response()->json([
-                'message' => 'Marca eliminada'
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'message' => 'Error al eliminar',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
-}
 ```
-
 ---

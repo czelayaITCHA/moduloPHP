@@ -84,15 +84,25 @@ class MarcaController extends Controller
 {
     public function index()
     {
-        try {
-            $marcas = Marca::all();
+         try{
+            // Forma básica
+            // $marcas = Marca::all();
 
-            return response()->json($marcas, 200);
-        } catch (\Exception $e) {
+            // Ordenadas
+            $marcas = Marca::orderBy('id','desc')->get();
+
+            // Paginadas
+            // $marcas = Marca::orderBy('id','desc')->paginate(10);
+
             return response()->json([
-                'message' => 'Error al listar marcas',
+                'estado' => true,
+                'marcas' => $marcas
+            ], 200);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Error al obtener las marcas',
                 'error' => $e->getMessage()
-            ], 500);
+            ],500);
         }
     }
 

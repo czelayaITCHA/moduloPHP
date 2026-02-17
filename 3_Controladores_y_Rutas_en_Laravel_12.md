@@ -687,5 +687,20 @@ public function index()
     }
 
 ```
+### 6.3 Programar el método **show()** para obtener un producto completo por medio de su id
 
+```php
+  public function show(string $id)
+    {
+        try{
+            $producto = Producto::with(['marca','categoria','imagenes'])->findOrFail($id);
+            return response()->json($producto);
+        }catch(ModelNotFoundException $e){
+            return response()->json([
+                'message' => 'No se ha encontrado el producto con ID = ' . $id
+            ],404);
+        }
+    }
+
+```
 ---

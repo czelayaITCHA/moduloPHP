@@ -806,5 +806,9 @@ public function update(Request $request, string $id)
         }
     }
 ```
-
+### 6.5 Programar el método **destroy** para eliminar un registro de la tabla productos
+Este método deberá desarrollarlo, considerar lo siguiente:
+* Considerar que debe existir el modelo con el $id pasado como parámetro, en caso contrario manejarlo con ModelNotFoundException
+* Verificar que el producto a eliminar no tenga registros relacionados con order_items
+* En caso de poderse eliminar, se deben eliminar los archicos de imagen de la carpeta **public/images/productos**, asociados con el producto, de igual manera eliminar los registros en la tabla **imagenes** asociadas al producto
 ---

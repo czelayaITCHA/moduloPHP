@@ -162,5 +162,60 @@ php artisan make:migration update_estado_enum_in_table_orders
         
     }
   ```
-* 
+* Programar método para gestionar los estados de las ordenes, en el controlador OrderController
+```php
+ public function gestionarEstado(Request $request, $id){
+        try{
+            //obtener la orden de la bd
+            $order = Order::findOrFail($id);
+            //validamos estados que vienen por $request
+            $data = $request->validate([
+                'estado' => 'required|in:PENDIENTE,PAGADA,CANCELADA,REEMBOLSADA,ENTREGADA'
+            ]);
+            //obtenemos el nuevo estado de la orden
+            $nuevoEstado = $data['estado'];
+            //obtenemos el estado actual de la orden
+            $estadoActual = $order->estado;
+            //definimos reglas de transición entre estados
+            $transicionesValidas = [
+                'PENDIENTE' => ['PAGADA','CANCELADA'],
+                'PAGADA' => ['ENTREGADA','REEMBOLSADA'],
+                'ENTREGADA' => ['REEMBOLSADA'],
+                'CANCELADA' =>[],
+                'REEMBOLSADA' =>[]
+            ];
+            //verificamos que se cumplan las reglas de transición
+            if(!in_array($nuevoEstado, $transicionesValidas[$estadoActual])){
+                return response()->json([
+                    'message' => "No se puede cambiar de $estadoActual a $nuevoEstado"
+                ],400);
+            }
+            //seteamos el nuevo estado
+            $order->estado = $nuevoEstado;
+            //si estado == 'ENTREGADA', actualizar fecha_despacho
+            if($nuevoEstado === 'ENTREGADA'){
+                $order->fecha_despacho = now();
+            }
+            $order->update(); //actualizamos el registro
+            //devolvemos la respuesta al frontend
+            return response()->json([
+                'message' => "La orden $order->correlativo ha cambiado a estado $nuevoEstado",
+                'order' => $order->load('items.producto')
+            ]);
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Error al actualizar el estado de la orden',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+```
+
+* Crear en el archivo api.php para crear el endpoint para la función programada en el item anterior
+  ```bash
+  Route::put('ordenes/estado/{id}', [OrderController::class,'gestionarEstado']);
+  ```
+* hacer pruebas en postman
+
+  
   

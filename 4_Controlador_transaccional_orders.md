@@ -135,4 +135,32 @@ private function generarCorrelativo(){
         return $year . $month . $numero;
     }
 ```
+### 3.4 Crear un método para gestionar los estados de las órdenes, aparte de los métodos que proporciona un controlador de tipo apiResource
+
+* agregar una migración para actualizar el estado de la tabla orders para que el *enum* tenga también el valor de 'ENTREGADA'
+ ```bash
+php artisan make:migration update_estado_enum_in_table_orders
+```
+* Editar el archivo de migración para cambiar los valores de **enum** del campo **estado**, como se va ejecutar una consulta nativa, se requiere importar la clase DB, en la parte superior de la migración
+  ```php
+  use Illuminate\Support\Facades\DB;
+  ```
+  Agregamos la consulta para modificar la columna estado, en la función up() de la migración y down() debe quedar vacía, tal como se muestra a continuación:
+  ```php
+  public function up(): void
+    {
+        DB::statement("ALTER TABLE orders MODIFY estado ENUM(
+        'PENDIENTE','PAGADA','CANCELADA', 'REEMBOLSADA',
+        'ENTREGADA') DEFAULT 'PENDIENTE'");
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        
+    }
+  ```
+* 
   

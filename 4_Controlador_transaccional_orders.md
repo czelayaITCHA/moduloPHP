@@ -123,7 +123,7 @@ public function store(Request $request)
     }
 ```
 * Crear método privado para generar correlativo de la orden
-  ```php
+```php
 private function generarCorrelativo(){
         $year = now()->format('Y');
         $month = now()->format('m');
@@ -134,4 +134,5 @@ private function generarCorrelativo(){
         $numero = str_pad($ultimo + 1 ,4,'0', STR_PAD_LEFT);
         return $year . $month . $numero;
     }
-  ```
+```
+  

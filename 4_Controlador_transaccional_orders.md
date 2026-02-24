@@ -51,7 +51,7 @@ Pruebas en Postman, a continuación se muestran ejemplos de pruebas de la funcio
 * Obtener las ordes de acuerdo a un estado, devolverá una colección de ordenes filtradas por el valor del parámetro **estado**
   <img width="1019" height="763" alt="image" src="https://github.com/user-attachments/assets/ebe469f6-8807-4003-a268-1d8af09b7962" />
 
- ### 3.2 Programar el método show($id) para obtener una obtener por medio de su id
+ ### 3.2 Programar el método show($id) para obtener una orden por medio de su id
  ```php
  public function show(string $id)
     {

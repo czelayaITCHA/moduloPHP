@@ -92,7 +92,31 @@ class User extends Authenticatable implements JWTSubject
     }
 }
 ```
+## 6. Crear el controlador AuthController
+* Crear el archivo del controlador dentro de una subcarpeta Auth
+  ```bash
+  php artisan make:controller Auth\AuthController
+  ```
+* Programar los métodos para autenticación y registro de usuarios
+  
+* 
+## 7. Crear rutas en el archivo api.php
+```php
+Route::prefix('auth')->group(function(){
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('login', [AuthController::class, 'login']);
 
+    Route::middleware('auth:api')->group(function(){
+        Route::get('me',[AuthController::class, 'me']);
+        Route::post('logout',[AuthController::class, 'logout']);
+        Route::post('refresh',[AuthController::class, 'refresh']);
+    });
+});
+```
+Recuerde que debe importar el controlador AuthController
 
+```php
+use App\Http\Controllers\Auth\AuthController;
+```
 
 

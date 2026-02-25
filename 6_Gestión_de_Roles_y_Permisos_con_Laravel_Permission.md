@@ -31,3 +31,14 @@ role_has_permissions
 ```bash
 composer require spatie/laravel-permission
 ```
+## 3. Publicar migraciones
+```bash
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+```
+## 4. Ejecutar migraciones de Laravel Permission
+```bash
+php artisan migrate
+```
+Verificar que en su base datos, se hayan creado las tablas marcadas en la siguiente imágen:
+
+<img width="930" height="437" alt="image" src="https://github.com/user-attachments/assets/68037c4f-6159-40e6-9cc1-4a99b7be3b8e" />

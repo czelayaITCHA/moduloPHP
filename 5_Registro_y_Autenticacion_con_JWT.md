@@ -97,8 +97,73 @@ class User extends Authenticatable implements JWTSubject
   ```bash
   php artisan make:controller Auth\AuthController
   ```
-* Programar los métodos para autenticación y registro de usuarios
-  
+* Programar los métodos para la gestión de usuarios
+- Importaciones necesarias en el controlador
+  ```php
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
+  ```
+- Programar método de login
+```php
+public function login(Request $request){
+        $credenciales = $request->only('email','password');
+        //evaluamos si no se obtiene un token válido
+        if(!$token = Auth::attempt($credenciales)){
+           return response()->json([
+            'message'=> 'Credenciales inválidas'
+           ], 401);     
+        }
+        //en caso de exitoso retornamos el token
+        return $this->responseWithToken($token);
+    }
+```
+- Programar método para registro de usuarios
+  ```php
+  public function register(Request $request){
+        //validamos datos a través de Request
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|string|max:191',
+            'email' => 'required|string|email|max:191|unique:users',
+            'password' => 'required|string|min:8'
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors(),422);
+        }
+        //creamos el usuario
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password)
+        ]);
+
+        //Recordatorio--Asignar rol por defecto
+
+        //generamos el token
+        $token = JWTAuth::fromUser($user);
+        //retornamos la respuesta
+
+        return response()->json([
+            'message' => 'Usuario registrado correctamente',
+            'user' => $user,
+            'access_token' => $token,
+            'token_type' => 'bearer',
+             'expires_in' => auth()->factory()->getTTL() * 60
+        ],201);
+    }
+
+    protected function responseWithToken($token){
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'user' => auth()->user(),
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
+    }
+  ```
+    
 * 
 ## 7. Crear rutas en el archivo api.php
 ```php

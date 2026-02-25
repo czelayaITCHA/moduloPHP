@@ -192,12 +192,11 @@ Si todo esta bien tinker mostrará el usuario creado como se muestra a continuac
   ## Proteger rutas por role
   Por ejemplo si solo usuarios con el role **ADMIN**, tendrán acceso a las rutas de marcas y categorías se pueden proteger de la forma siguiente:
 
-  ```php
+```php
 Route::middleware(['auth:api', 'role:ADMIN'])->group(function () {
     Route::apiResource('marcas',MarcaController::class);
     Route::apiResource('categorias',CategoriaController::class);    
 });
-
   ```
   
 

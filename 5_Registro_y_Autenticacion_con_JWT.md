@@ -34,6 +34,64 @@ Esto generará una llave secreta que se mostrará en la consola y creará una va
     ],
 
   ```
+## 5. Configurar el modelo User para implementar JWT
+importamos el espacio de nombre para la interface **JWTSubject**, antes de la definición de la clase del modelo User
+```php
+use Tymon\JWTAuth\Contracts\JWTSubject;
+```
+Implementación de la interface **JWTSubject** al modelo user y sus métodos
+```php
+class User extends Authenticatable implements JWTSubject
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable;
+
+    //sobreescribimos la variable $guard_name
+    protected $guard_name = 'api';
+
+    //implementación de los métodos de JWT
+    public function getJWTIdentifier(){
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims(){
+        return [];
+    }
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+```
 
 
 

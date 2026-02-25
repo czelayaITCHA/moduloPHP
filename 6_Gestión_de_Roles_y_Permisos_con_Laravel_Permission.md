@@ -198,5 +198,7 @@ Route::middleware(['auth:api', 'role:ADMIN'])->group(function () {
     Route::apiResource('categorias',CategoriaController::class);    
 });
   ```
-  
+ * Para mas información y detalle sobre gestión de permisos por role, consultar documentación en:
+
+    [Laravel Permission](https://spatie.be/docs/laravel-permission/v7/introduction)
 

@@ -164,7 +164,25 @@ public function login(Request $request){
         ]);
     }
   ```
--   
+- métodos adicionales
+  ```php
+  public function me(){
+    return response()->json(auth()->user());
+  }
+
+  //método para invalidar un token (logout)
+  public function logout(){
+    auth()->logout();
+    return response()->json([
+        'message' => 'Sesión cerrada correctamente'
+    ]);
+  }
+
+  //método para refrescar el token
+  public function refresh(){
+    return $this->responseWithToken(auth()->refresh());
+  }
+  ```
     
 
 ## 7. Crear rutas en el archivo api.php

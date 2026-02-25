@@ -187,6 +187,6 @@ Si todo esta bien tinker mostrará el usuario creado como se muestra a continuac
 * Y en la tabla **model_has_roles**, quedaría así:
   <img width="938" height="382" alt="image" src="https://github.com/user-attachments/assets/e8220c38-495b-449a-af8b-482f55883363" />
 
-  El **role_id = 1 (ADMIN)**, asignado al **model 2 (user_id)**
+  El **role_id = 1 (ADMIN)**, asignado al **model_id = 2 (user_id)**
   
 

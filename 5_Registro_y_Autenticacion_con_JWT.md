@@ -12,8 +12,12 @@ php artisan vendor:publish --provider="Tymon\JWTAuth\Providers\LaravelServicePro
 ```bash
 php artisan jwt:secret
 ```
-Esto generará una llave secreta que se mostrará en la consola y creará una variable de entorno en el archivo **.env**, como se muestra a continuación
+Esto generará una llave secreta que se mostrará en la consola y creará una variable de entorno en el archivo **.env**, como se muestra a continuación:
+
 <img width="763" height="460" alt="image" src="https://github.com/user-attachments/assets/38668577-e375-4a99-b906-41e72b2d41f6" />
+
+## 4. Configurar el archivo auth.php para usar JWT
+
 
 
 

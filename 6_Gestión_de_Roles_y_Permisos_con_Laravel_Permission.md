@@ -188,5 +188,16 @@ Si todo esta bien tinker mostrará el usuario creado como se muestra a continuac
   <img width="938" height="382" alt="image" src="https://github.com/user-attachments/assets/e8220c38-495b-449a-af8b-482f55883363" />
 
   El **role_id = 1 (ADMIN)**, asignado al **model_id = 2 (user_id)**
+
+  ## Proteger rutas por role
+  Por ejemplo si solo usuarios con el role **ADMIN**, tendrán acceso a las rutas de marcas y categorías se pueden proteger de la forma siguiente:
+
+  ```php
+Route::middleware(['auth:api', 'role:ADMIN'])->group(function () {
+    Route::apiResource('marcas',MarcaController::class);
+    Route::apiResource('categorias',CategoriaController::class);    
+});
+
+  ```
   
 

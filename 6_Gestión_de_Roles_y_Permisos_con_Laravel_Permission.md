@@ -157,3 +157,17 @@ El método completo queda como el de la siguiente imágen:
 
 <img width="442" height="501" alt="image" src="https://github.com/user-attachments/assets/ab37110a-1fce-4fd9-a935-40746e6227a1" />
 
+Ahora si se realiza la prueba de registrar un usuario desde Postman, le asignará el rol 'CLIENTE'
+
+<img width="1244" height="568" alt="image" src="https://github.com/user-attachments/assets/ea180984-d0c8-4cb8-90c1-73ade55cddec" />
+
+### 7.3 Verificar registros en las tablas
+
+* Tabla **users**
+  <img width="1157" height="314" alt="image" src="https://github.com/user-attachments/assets/4ba59a0d-1f7c-4668-b5fa-09ed995e8ed5" />
+
+* Se registra el rol 2 (CLIENTE) en la tabla **model_has_roles**
+<img width="1061" height="361" alt="image" src="https://github.com/user-attachments/assets/dc39e19f-cfc2-4bf0-8009-bf839f1cf5b0" />
+
+
+

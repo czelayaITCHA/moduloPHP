@@ -98,15 +98,16 @@ class User extends Authenticatable implements JWTSubject
   php artisan make:controller Auth\AuthController
   ```
 * Programar los métodos para la gestión de usuarios
-- Importaciones necesarias en el controlador
-  ```php
+  
+importaciones
+```php
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
-  ```
-- Programar método de login
+```
+- Programar método login
 ```php
 public function login(Request $request){
         $credenciales = $request->only('email','password');
@@ -163,8 +164,9 @@ public function login(Request $request){
         ]);
     }
   ```
+-   
     
-* 
+
 ## 7. Crear rutas en el archivo api.php
 ```php
 Route::prefix('auth')->group(function(){

@@ -169,5 +169,15 @@ Ahora si se realiza la prueba de registrar un usuario desde Postman, le asignar�
 * Se registra el rol 2 (CLIENTE) en la tabla **model_has_roles**
 <img width="1061" height="361" alt="image" src="https://github.com/user-attachments/assets/dc39e19f-cfc2-4bf0-8009-bf839f1cf5b0" />
 
+### 7.4 Registrar un usuario con rol "ADMIN" desde tinker
+* Crear el usuario, importanto los espacios de nombres requeridos y luego creando el usuario con el modelo User
+  
+Si todo esta bien tinker mostrará el usuario creado como se muestra a continuación 
+<img width="1043" height="327" alt="image" src="https://github.com/user-attachments/assets/0109c21d-235a-46d8-a58d-84ab285eedc7" />
 
+* Con lo anterior se registra el usuario en la tabla **users**
+<img width="1132" height="370" alt="image" src="https://github.com/user-attachments/assets/27f66457-d8cd-48b7-b5ea-68bc2a319a89" />
+
+* Asignar el rol al usuario creado anteriormente
+  
 

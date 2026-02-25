@@ -218,5 +218,6 @@ En caso de error en la tabla de rutas, se deberá corregir para que el resto de 
   En la imágen anterior se observa que si el email o password no existen en la tabla de **users**, devuelve un código de status http 401 (No autorizado) y por lo tanto no se genera un token.
   
 ### 10.2 Prueba de registro de usuarios
+<img width="1004" height="654" alt="image" src="https://github.com/user-attachments/assets/44a02bcb-701c-4063-bf89-ca240016d123" />
 
 

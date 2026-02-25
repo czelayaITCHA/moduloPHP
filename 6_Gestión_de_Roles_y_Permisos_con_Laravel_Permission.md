@@ -142,5 +142,18 @@ php artisan db:seed --class=RoleSeeder
 Revisa la tabla **roles** que se hayan ingresado los registros correctamente como se muestra en la siguiente imágen:
 <img width="958" height="360" alt="image" src="https://github.com/user-attachments/assets/ce249d4d-b61b-41c5-b2f1-ac93acca5239" />
 
+## 7. Asignar el rol "CLIENTE", por default al usuario en AuthController
+### 7.1 Importación necesaria
+```php
+  use Spatie\Permission\Models\Role;
+```
+### 7.2 Asignar rol en el método **register**
+En el método register se había dejado el comentario para asignar el rol "CLIENTE", cada vez que se registren usuarios(cliente), para el caso de usuarios con rol ADMIN, se hará manualmente
+```php
+//Recordatorio--Asignar rol por defecto
+$user->assignRole('CLIENTE');
+```
+El método completo queda como el de la siguiente imágen:
 
-## 7.
+<img width="442" height="501" alt="image" src="https://github.com/user-attachments/assets/ab37110a-1fce-4fd9-a935-40746e6227a1" />
+

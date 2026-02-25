@@ -178,6 +178,15 @@ Si todo esta bien tinker mostrará el usuario creado como se muestra a continuac
 * Con lo anterior se registra el usuario en la tabla **users**
 <img width="1132" height="370" alt="image" src="https://github.com/user-attachments/assets/27f66457-d8cd-48b7-b5ea-68bc2a319a89" />
 
-* Asignar el rol al usuario creado anteriormente
+* Asignar el rol al usuario creado anteriormente, con la instrucción **$user->assignRole('ADMIN');** y el resultado como se muestra en la imágen
+  <img width="713" height="188" alt="image" src="https://github.com/user-attachments/assets/089a420b-3cb8-4ecb-b062-17969f6ee361" />
+
+* Mostrar rol asignado al usuario con **$user->getRoleNames();**, el resultado debe ser como se muestra a continuación
+  <img width="348" height="117" alt="image" src="https://github.com/user-attachments/assets/edf81bf2-7dbf-41d1-8f0d-d0e6e2c5902f" />
+
+* Y en la tabla **model_has_roles**, quedaría así:
+  <img width="938" height="382" alt="image" src="https://github.com/user-attachments/assets/e8220c38-495b-449a-af8b-482f55883363" />
+
+  El **role_id = 1 (ADMIN)**, asignado al **model 2 (user_id)**
   
 

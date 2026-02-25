@@ -203,5 +203,7 @@ Recuerde que debe importar el controlador AuthController
 ```php
 use App\Http\Controllers\Auth\AuthController;
 ```
+## 8. Probar endpoints en Postman
+
 
 

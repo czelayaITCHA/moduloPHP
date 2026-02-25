@@ -127,8 +127,20 @@ use Spatie\Permission\Models\Role;
 ```
 ### 6.3 Crear los roles en el método **run**
 ```php
-Role::create(['name' => 'ADMIN', 'guard_name' => 'api']);
-Role::create(['name' => 'CLIENTE', 'guard_name' => 'api']);
-Role::create(['name' => 'VENDEDOR', 'guard_name' => 'api']);
+public function run(): void
+{
+    Role::create(['name' => 'ADMIN', 'guard_name' => 'api']);
+    Role::create(['name' => 'CLIENTE', 'guard_name' => 'api']);
+    Role::create(['name' => 'VENDEDOR', 'guard_name' => 'api']);
+}
 ```
+
+### 6.4 Ejecutar el seeder
+```bash
+php artisan db:seed --class=RoleSeeder
+```
+Revisa la tabla **roles** que se hayan ingresado los registros correctamente como se muestra en la siguiente imágen:
+<img width="958" height="360" alt="image" src="https://github.com/user-attachments/assets/ce249d4d-b61b-41c5-b2f1-ac93acca5239" />
+
+
 ## 7.

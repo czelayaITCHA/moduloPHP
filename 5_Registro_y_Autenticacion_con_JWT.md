@@ -203,7 +203,12 @@ Recuerde que debe importar el controlador AuthController
 ```php
 use App\Http\Controllers\Auth\AuthController;
 ```
-## 8. Probar endpoints en Postman
+### 9. Consultar tabla de rutas, deben aparecer las rutas relacionadas a autenticación y registro de usuarios
+<img width="898" height="447" alt="image" src="https://github.com/user-attachments/assets/3e067601-1989-4906-bfdf-f1672bd20355" />
+
+En caso de error en la tabla de rutas, se deberá corregir para que el resto de la aplicación funcione
+
+## 10. Probar endpoints en Postman
 
 
 

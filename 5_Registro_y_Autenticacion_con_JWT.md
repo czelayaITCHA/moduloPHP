@@ -209,6 +209,14 @@ use App\Http\Controllers\Auth\AuthController;
 En caso de error en la tabla de rutas, se deberá corregir para que el resto de la aplicación funcione
 
 ## 10. Probar endpoints en Postman
+### 10.1 Prueba de login
+* Prueba con email y password correctos
+  <img width="1019" height="563" alt="image" src="https://github.com/user-attachments/assets/99d2ead3-3b64-45d3-9ab4-6e64f49f35a2" />
+* Prueba con email o password incorrectos
+  <img width="1017" height="581" alt="image" src="https://github.com/user-attachments/assets/f05bb316-db06-4bc8-bc5c-be2c64bc9b55" />
 
+  En la imágen anterior se observa que si el email o password no existen en la tabla de **users**, devuelve un código de status http 401 (No autorizado) y por lo tanto no se genera un token.
+  
+### 10.2 Prueba de registro de usuarios
 
 

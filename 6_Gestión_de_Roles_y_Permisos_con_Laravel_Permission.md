@@ -42,3 +42,71 @@ php artisan migrate
 Verificar que en su base datos, se hayan creado las tablas marcadas en la siguiente imágen:
 
 <img width="930" height="437" alt="image" src="https://github.com/user-attachments/assets/68037c4f-6159-40e6-9cc1-4a99b7be3b8e" />
+
+## 5. Configurar el modelo User
+* importación necesaria:
+```bash
+use Spatie\Permission\Traits\HasRoles;
+```
+* agregar **hasRoles**, la clase completa quedaría así:
+  ```php
+  use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Permission\Traits\HasRoles;
+
+class User extends Authenticatable implements JWTSubject
+{
+    /** @use HasFactory<\Database\Factories\UserFactory> */
+    use HasFactory, Notifiable, HasRoles;
+
+    //sobreescribimos la variable $guard_name
+    protected $guard_name = 'api';
+
+    //implementación de los métodos de JWT
+    public function getJWTIdentifier(){
+        return $this->getKey();
+    }
+    public function getJWTCustomClaims(){
+        return [];
+    }
+
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'password' => 'hashed',
+        ];
+    }
+}
+
+  ```
+*  

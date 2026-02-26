@@ -41,26 +41,43 @@ npx tailwindcss init -p
 ```
 * Configuración del archivo **tailwind.config.js**
   
-  ```JS
-  export default {
-    content: [
-       "./index.html",
-      "./src/**/*.{js,jsx}"
-    ],
-    theme: {
-      extend: {},
-    },
-    plugins: [],
-}
+```JS
+export default {
+  content: [
+     "./index.html",
+    "./src/**/*.{js,jsx}"
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}  
 ```
+
 * hacer importaciones de directivas en **src/assets/main.css**
+
 ```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
 ## 3. Instalar PrimeVue
+**¿Qué es PrimeVue?** es una completa biblioteca de componentes de interfaz de usuario (UI) de código abierto diseñada específicamente para Vue.js. Ofrece más de 80 componentes listos para usar (tablas, formularios, menús), enfocados en alto rendimiento, personalización y temas integrados, facilitando la creación de aplicaciones web modernas y responsivas.
 
+* Instalación de paquetes
+```bash
+npm install primevue primeicons
+```
+* Hacer importaciones en archivo **main.js**
+
+  ```js
+import PrimeVue from 'primevue/config'
+import 'primevue/resources/themes/lara-dark-blue/theme.css'
+import 'primevue/resources/primevue.min.css'
+import 'primeicons/primeicons.css'
+
+app.use(PrimeVue)
+  ```
 ## 4. Instalar el cliente http Axios 
 
 

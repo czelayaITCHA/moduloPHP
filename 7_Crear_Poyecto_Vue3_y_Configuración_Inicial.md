@@ -25,7 +25,8 @@ npm run dev
 Aparecerá una ventana similar a la siguiente:
 
 <img width="819" height="207" alt="image" src="https://github.com/user-attachments/assets/825268ae-a1d4-4a79-b2a3-2cc8bcbd6653" />
-Correr la aplicación con la url local en el navegador de su prefenencia, debe mostrar la pantalla inicial de un proyecto Vue 3, como se muestra a continuación
+
+Correr la aplicación con la url local en el navegador de su prefenencia, debe mostrar la pantalla inicial de un proyecto Vue 3, puede verificar que ya una aplicación de tipo SPA, como se muestra a continuación
 
 <img width="1355" height="662" alt="image" src="https://github.com/user-attachments/assets/0d57f399-f5fe-4030-b2e4-03c9f31bb4de" />
 
@@ -42,6 +43,8 @@ Tailwind es un framework de CSS que, a diferencia de los tradicionales como Boot
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 ```
+Si se tiene problemas al ejecutar **npx tailwindcss init -p**, es por incompatibilidad con la versión de node, es este caso crear los archivos **tailwind.config.js** y **postcss.config.js**, en la raíz del proyecto
+
 * Configuración del archivo **tailwind.config.js**
   
 ```JS
@@ -55,6 +58,16 @@ export default {
   },
   plugins: [],
 }  
+```
+* Configuración del archivo **postcss.config.js**
+
+```JS
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
 ```
 
 * hacer importaciones de directivas en **src/assets/main.css**

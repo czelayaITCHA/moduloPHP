@@ -56,7 +56,7 @@ export default {
 
 * hacer importaciones de directivas en **src/assets/main.css**
 
-```css
+```CSS
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

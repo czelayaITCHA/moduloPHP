@@ -40,10 +40,10 @@ Tailwind es un framework de CSS que, a diferencia de los tradicionales como Boot
 
 * Instalación de los paquetes
 ```bash
-npm install -D tailwindcss postcss autoprefixer
+npm install -D tailwindcss@3.4.4 postcss autoprefixer
 npx tailwindcss init -p
 ```
-Si se tiene problemas al ejecutar **npx tailwindcss init -p**, es por incompatibilidad con la versión de node, es este caso crear los archivos **tailwind.config.js** y **postcss.config.js**, en la raíz del proyecto
+Si tiene problemas al ejecutar **npx tailwindcss init -p**, es por incompatibilidad con la versión de node, en este caso crear los archivos **tailwind.config.js** y **postcss.config.js**, en la raíz del proyecto manualmente
 
 * Configuración del archivo **tailwind.config.js**
   
@@ -76,6 +76,18 @@ export default {
 @tailwind components;
 @tailwind utilities;
 ```
+* Probar que tailwind este funcionando, elimina el contenido del componente App.vue y cambialo por este:
+  ```JS
+  <template>
+  <div class="bg-red-500 text-white p-10 text-3xl">
+    Tailwind funcionando 🚀
+  </div>
+</template>
+  ```
+Si el resultado es como la imágen de abajo, significa que tailwind esta funcionando correctamente
+
+<img width="1355" height="168" alt="image" src="https://github.com/user-attachments/assets/b64e64d6-2c3d-40a7-9d96-229c33c0cfcb" />
+
 
 ## 3. Instalar PrimeVue
 **¿Qué es PrimeVue?** es una completa biblioteca de componentes de interfaz de usuario (UI) de código abierto diseñada específicamente para Vue.js. Ofrece más de 80 componentes listos para usar (tablas, formularios, menús), enfocados en alto rendimiento, personalización y temas integrados, facilitando la creación de aplicaciones web modernas y responsivas.

@@ -55,12 +55,12 @@ export default {
 ```
 
 * hacer importaciones de directivas en **src/assets/main.css**
-
-```CSS
+```css
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 ```
+
 ## 3. Instalar PrimeVue
 **¿Qué es PrimeVue?** es una completa biblioteca de componentes de interfaz de usuario (UI) de código abierto diseñada específicamente para Vue.js. Ofrece más de 80 componentes listos para usar (tablas, formularios, menús), enfocados en alto rendimiento, personalización y temas integrados, facilitando la creación de aplicaciones web modernas y responsivas.
 
@@ -69,16 +69,46 @@ export default {
 npm install primevue primeicons
 ```
 * Hacer importaciones en archivo **main.js**
-
-  ```js
+```js
 import PrimeVue from 'primevue/config'
 import 'primevue/resources/themes/lara-dark-blue/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
 app.use(PrimeVue)
-  ```
+```
 ## 4. Instalar el cliente http Axios 
+```bash
+npm install axios
+```
+## 5. instalar vue router y pinia
+por alguna razón no se instaló vue-router en la creación del proyecto, se hará manualmente
+* Instalar paquete
+```bash
+npm install vue-router@4 pinia
+```
+* Crear archivo de rutas del frontend en *src/router/index.js*
+  
+## 6. crear un servicio en src/services/api.js, para interceptar peticios http, debe crear la carpeta **service** dentro de src
 
-
-
+## 7. Definir la siguiente estructura para el proyecto
+```Plain Text
+src/
+├── router/
+│     └── index.js
+├── services/
+│     └── api.js
+├── stores/
+│     └── auth.js
+├── layouts/
+│     ├── PublicLayout.vue
+│     └── AdminLayout.vue
+├── components/
+│     ├── public/
+│     │     ├── Home.vue
+│     │     ├── Products.vue
+│     │     └── Login.vue
+│     └── admin/
+│           ├── Dashboard.vue
+│           └── Products.vue
+```

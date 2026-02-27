@@ -53,6 +53,10 @@ export default {
     "./index.html",
     "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
+  // AÑADE ESTO: Es lo que evita que los botones de primevue pierdan el fondo
+  corePlugins: {
+    preflight: false,
+  },
   theme: {
     extend: {
       colors:{
@@ -76,20 +80,39 @@ export default {
 }
 ```
 
-* hacer importaciones de directivas en **src/assets/main.css**
+* hacer importaciones de directivas en **src/assets/main.css**, se crean capas para evitar conflictos entre estilos de tailwind y primevue
 ```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+/* 1. Definimos el orden */
+@layer tailwind-base, primevue, tailwind-utilities;
+
+/* 2. Base de Tailwind */
+@layer tailwind-base {
+  @tailwind base;
+  
+  /* Reset mínimo manual para que la parte pública no se rompa */
+  *, ::before, ::after { box-sizing: border-box; border-width: 0; border-style: solid; }
+  img, svg { display: block; vertical-align: middle; }
+}
+
+/* 3. Forzamos a que PrimeVue use su capa (IMPORTANTE) */
+@layer primevue {
+  /* No pongas nada aquí, lo inyectaremos vía CSS imports o déjalo listo para overrides */
+}
+
+/* 4. Utilidades de Tailwind al final para que siempre ganen */
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
+}```
+
 * Probar que tailwind este funcionando, elimina el contenido del componente App.vue y cambialo por este:
-  ```JS
+```JS
   <template>
   <div class="bg-red-500 text-white p-10 text-3xl">
     Tailwind funcionando 🚀
   </div>
 </template>
-  ```
+```
 Si el resultado es como la imágen de abajo, significa que tailwind esta funcionando correctamente
 
 <img width="1355" height="168" alt="image" src="https://github.com/user-attachments/assets/b64e64d6-2c3d-40a7-9d96-229c33c0cfcb" />
@@ -97,9 +120,9 @@ Si el resultado es como la imágen de abajo, significa que tailwind esta funcion
 ## 3. Instalar PrimeVue
 **¿Qué es PrimeVue?** es una completa biblioteca de componentes de interfaz de usuario (UI) de código abierto diseñada específicamente para Vue.js. Ofrece más de 80 componentes listos para usar (tablas, formularios, menús), enfocados en alto rendimiento, personalización y temas integrados, facilitando la creación de aplicaciones web modernas y responsivas.
 
-* Instalación de paquetes
+* Instalación de paquetes de la version 3
 ```bash
-npm install primevue primeicons
+npm install primevue@3.53.1 primeicons
 ```
 * Hacer importaciones en archivo **main.js**
 ```js
@@ -110,20 +133,36 @@ import 'primeicons/primeicons.css'
 
 app.use(PrimeVue)
 ```
+El archivo **main.js**, debe quedar así como se muestra a continuación
+```JS
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import { createPinia } from 'pinia'
+import PrimeVue from 'primevue/config'
+
+// 1. IMPORTAR ESTILOS DE Tailwind
+import './assets/main.css' 
+
+// 2. ESTILOS DE PRIMEVUE
+import 'primevue/resources/themes/lara-dark-blue/theme.css'
+import 'primevue/resources/primevue.min.css'
+import 'primeicons/primeicons.css'
+
+const app = createApp(App)
+app.use(createPinia())
+app.use(router)
+app.use(PrimeVue)
+app.mount('#app')
+```
 ## 4. Instalar el cliente http Axios 
 ```bash
 npm install axios
 ```
-## 5. instalar vue router y pinia
-por alguna razón no se instaló vue-router en la creación del proyecto, se hará manualmente
-* Instalar paquete
-```bash
-npm install vue-router@4 pinia
-```
-* Crear archivo de rutas del frontend en *src/router/index.js*
   
 ## 6. crear un servicio en src/services/api.js, para interceptar peticios http, debe crear la carpeta **service** dentro de src
 
+[
 ## 7. Definir la siguiente estructura para el proyecto
 ```Plain Text
 src/
@@ -145,3 +184,4 @@ src/
 │           ├── Dashboard.vue
 │           └── Products.vue
 ```
+]

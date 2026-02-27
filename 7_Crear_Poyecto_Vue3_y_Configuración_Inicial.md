@@ -155,6 +155,44 @@ app.use(router)
 app.use(PrimeVue)
 app.mount('#app')
 ```
+* Probar que tailwind y primevue funcionen correctamente, cambiar el contenido del componente principal App.vue, por el siguiente código
+
+```JS
+<script setup>
+import Button from 'primevue/button'
+import Card from 'primevue/card'
+</script>
+
+<template>
+  <div class="min-h-screen bg-slate-900 flex items-center justify-center p-10">
+
+    <Card class="w-full max-w-md shadow-2xl">
+      <template #title>
+        <div class="text-center text-2xl font-bold">
+          🚀 TechStore UI Test
+        </div>
+      </template>
+
+      <template #content>
+        <p class="mb-6 text-center">
+          Si ves esto con estilo moderno,
+          PrimeVue y Tailwind están funcionando correctamente.
+        </p>
+
+        <div class="flex justify-center gap-4">
+          <Button label="Primario" icon="pi pi-check" />
+          <Button label="Secundario" severity="secondary" />
+        </div>
+      </template>
+    </Card>
+
+  </div>
+</template>
+```
+Si el resultado es como el que se muestra en la siguiente imágen, indica que todo esta bien por el momento
+
+<img width="411" height="249" alt="image" src="https://github.com/user-attachments/assets/64cda6de-e30e-4635-baef-10eba6c22e3e" />
+
 ## 4. Instalar el cliente http Axios 
 ```bash
 npm install axios

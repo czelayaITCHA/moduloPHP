@@ -88,7 +88,6 @@ Si el resultado es como la imágen de abajo, significa que tailwind esta funcion
 
 <img width="1355" height="168" alt="image" src="https://github.com/user-attachments/assets/b64e64d6-2c3d-40a7-9d96-229c33c0cfcb" />
 
-
 ## 3. Instalar PrimeVue
 **¿Qué es PrimeVue?** es una completa biblioteca de componentes de interfaz de usuario (UI) de código abierto diseñada específicamente para Vue.js. Ofrece más de 80 componentes listos para usar (tablas, formularios, menús), enfocados en alto rendimiento, personalización y temas integrados, facilitando la creación de aplicaciones web modernas y responsivas.
 

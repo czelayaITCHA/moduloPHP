@@ -105,6 +105,7 @@ export default {
   @tailwind utilities;
 }```
 
+
 * Probar que tailwind este funcionando, elimina el contenido del componente App.vue y cambialo por este:
 ```JS
   <template>

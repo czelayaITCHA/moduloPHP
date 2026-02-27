@@ -198,29 +198,3 @@ Si el resultado es como el que se muestra en la siguiente imágen, indica que to
 ```bash
 npm install axios
 ```
-  
-## 6. crear un servicio en src/services/api.js, para interceptar peticios http, debe crear la carpeta **service** dentro de src
-
-[
-## 7. Definir la siguiente estructura para el proyecto
-```Plain Text
-src/
-├── router/
-│     └── index.js
-├── services/
-│     └── api.js
-├── stores/
-│     └── auth.js
-├── layouts/
-│     ├── PublicLayout.vue
-│     └── AdminLayout.vue
-├── components/
-│     ├── public/
-│     │     ├── Home.vue
-│     │     ├── Products.vue
-│     │     └── Login.vue
-│     └── admin/
-│           ├── Dashboard.vue
-│           └── Products.vue
-```
-]

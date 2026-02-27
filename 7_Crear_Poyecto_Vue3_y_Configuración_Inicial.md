@@ -50,14 +50,20 @@ Si tiene problemas al ejecutar **npx tailwindcss init -p**, es por incompatibili
 ```JS
 export default {
   content: [
-     "./index.html",
-    "./src/**/*.{js,jsx}"
+    "./index.html",
+    "./src/**/*.{vue,js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors:{
+        primary: "#0F172A",
+        secondary: "#1E293B",
+        accent: "#3B82F6",
+      }
+    },
   },
   plugins: [],
-}  
+}
 ```
 * Configuración del archivo **postcss.config.js**
 

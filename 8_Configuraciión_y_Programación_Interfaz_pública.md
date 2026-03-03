@@ -1147,7 +1147,7 @@ app.mount('#app')
 @tailwind components;
 @tailwind utilities;
 ```
-**Recomendación** 
+**Recomendación:** 
 
 Desintalar primevue 3.53.1
 ```bash

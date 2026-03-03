@@ -1129,8 +1129,9 @@ import PrimeVue from 'primevue/config'
 import './assets/main.css' 
 
 // 2. ESTILOS DE PRIMEVUE
-import 'primevue/resources/themes/lara-dark-blue/theme.css'
-import 'primevue/resources/primevue.min.css'
+
+import 'primevue/resources/themes/saga-blue/theme.css'
+import 'primevue/resources/primevue.css'
 import 'primeicons/primeicons.css'
 
 const app = createApp(App)
@@ -1139,3 +1140,21 @@ app.use(router)
 app.use(PrimeVue)
 app.mount('#app')
 ```
+## 8.12 El archivo de configuración main.css debe quedar así
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+**Recomendación** 
+
+Desintalar primevue 3.53.1
+```bash
+npm uninstall primevue@3.53.1
+```
+Instalar la versión 3.29.2
+```bash
+npm install primevue@3.29.2
+```
+

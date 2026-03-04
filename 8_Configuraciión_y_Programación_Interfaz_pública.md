@@ -1276,10 +1276,10 @@ const sendLogin = async () => {
 };
 </script>
 
-``
+````
 ## 8.14 Crear componente /views/Register.vue
 
-```vue
+````vue
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
@@ -1382,23 +1382,26 @@ const sendRegister = async () => {
 };
 </script>
 
-```
+````
 ## 4.15 Crear las rutas para cargar los componente Login y Rgister en **index.js**
 * importar los componentes
+
 ```js
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
 ```
+
 * Crear las rutas
+
 ```js
-    {
-      path: '/login',
-      name: 'login',
-      component: Login
-    },
-    {
-      path: '/register',
-      name: 'register',
-      component: Register
-    },
+ {
+    path: '/login',
+    name: 'login',
+    component: Login
+ },
+ {
+    path: '/register',
+    name: 'register',
+    component: Register
+ },
 ```

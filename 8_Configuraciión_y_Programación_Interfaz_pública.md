@@ -457,31 +457,52 @@ export const useProductStore = defineStore("products", () => {
   
 ```js
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
 import api from '@/services/api'
+import router from '@/router'
 
-export const useAuthStore = defineStore('auth', () => {
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    token: null,
+    user: null
+  }),
 
-  const user = ref(null)
-  const token = ref(null)
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+    isAdmin: (state) => state.user?.role === 'ADMIN'
+  },
 
-  const login = async (credentials) => {
-    const { data } = await api.post('/login', credentials)
-    user.value = data.user
-    token.value = data.token
+  actions: {
+
+    async login(credentials) {
+      const { data } = await api.post('/login', credentials)
+
+      this.token = data.access_token
+      this.user = data.user
+
+      if (this.user.role === 'ADMIN' || this.user.role === 'VENDEDOR') {
+        router.push('/dashboard')
+      } else {
+        router.push('/')
+      }
+    },
+
+    async register(payload) {
+      const { data } = await api.post('/register', payload)
+
+      this.token = data.access_token
+      this.user = data.user
+
+      router.push('/')
+    },
+
+    async logout() {
+      await api.post('/logout')
+      this.token = null
+      this.user = null
+      router.push('/')
+    }
   }
 
-  const logout = () => {
-    user.value = null
-    token.value = null
-  }
-
-  return {
-    user,
-    token,
-    login,
-    logout
-  }
 })
 ```
 ## 8.5 En la carpeta components/home, programar los siguientes componentes:

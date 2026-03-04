@@ -474,7 +474,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
 
     async login(credentials) {
-      const { data } = await api.post('/login', credentials)
+      const { data } = await api.post('/auth/login', credentials)
 
       this.token = data.access_token
       this.user = data.user
@@ -487,7 +487,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async register(payload) {
-      const { data } = await api.post('/register', payload)
+      const { data } = await api.post('/auth/register', payload)
 
       this.token = data.access_token
       this.user = data.user
@@ -496,7 +496,7 @@ export const useAuthStore = defineStore('auth', {
     },
 
     async logout() {
-      await api.post('/logout')
+      await api.post('/auth/logout')
       this.token = null
       this.user = null
       router.push('/')
@@ -947,77 +947,92 @@ const clearSearch = () => {
 <template>
   <nav class="bg-primary text-white shadow-lg fixed w-full z-50">
     <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      
+      <router-link to="/" class="text-2xl font-bold tracking-wide flex items-center gap-2">
+        💻 <span>TechStore</span>
+      </router-link>
 
-      <!-- Logo -->
-      <h1 class="text-2xl font-bold tracking-wide">
-        💻 TechStore
-      </h1>
-
-      <!-- Desktop Menu -->
       <div class="hidden md:flex gap-8 font-medium items-center">
-        <a href="#" class="hover:text-blue-200 transition">Inicio</a>
+        <router-link to="/" class="hover:text-blue-200 transition">Inicio</router-link>
         <a href="#" class="hover:text-blue-200 transition">Categorías</a>
         <a href="#" class="hover:text-blue-200 transition">Ofertas</a>
-        <a href="#" class="hover:text-blue-200 transition">Contacto</a>
 
-        <div class="flex gap-3 ml-6">
-          <button
-            class="px-4 py-2 border border-white rounded-lg hover:bg-white hover:text-primary transition"
-          >
-            Iniciar sesión
-          </button>
+        <div class="flex gap-4 ml-6 items-center">
+          <template v-if="!authStore.isAuthenticated">
+            <router-link to="/login" class="px-4 py-2 border border-white rounded-lg hover:bg-white hover:text-primary transition">
+              Iniciar sesión
+            </router-link>
+            <router-link to="/register" class="px-4 py-2 bg-white text-primary rounded-lg font-semibold hover:bg-gray-200 transition">
+              Registrarse
+            </router-link>
+          </template>
 
-          <button
-            class="px-4 py-2 bg-white text-primary rounded-lg font-semibold hover:bg-gray-200 transition"
-          >
-            Registrarse
-          </button>
+          <template v-else>
+            <span class="text-white font-semibold border-r border-blue-400 pr-4">
+              Hola, {{ authStore.user?.name }}
+            </span>
+            <button @click="authStore.logout()" class="text-amber-400 hover:text-amber-300 font-bold transition">
+              Cerrar sesión
+            </button>
+          </template>
         </div>
       </div>
 
-      <!-- Mobile Hamburger -->
-      <button
-        @click="toggleMenu"
-        class="md:hidden text-2xl focus:outline-none"
-      >
+      <button @click="toggleMenu" class="md:hidden text-2xl focus:outline-none" aria-label="Menu">
         <i :class="isOpen ? 'pi pi-times' : 'pi pi-bars'"></i>
       </button>
     </div>
 
-    <!-- Mobile Menu -->
     <transition name="slide">
-      <div
-        v-if="isOpen"
-        class="md:hidden bg-primary-dark px-6 py-6 space-y-6 shadow-xl"
-      >
-        <a href="#" class="block hover:text-blue-200 transition">Inicio</a>
+      <div v-if="isOpen" class="md:hidden bg-primary-dark border-t border-blue-800 px-6 py-6 space-y-6 shadow-xl">
+        <router-link to="/" @click="isOpen = false" class="block hover:text-blue-200 transition">Inicio</router-link>
         <a href="#" class="block hover:text-blue-200 transition">Categorías</a>
         <a href="#" class="block hover:text-blue-200 transition">Ofertas</a>
-        <a href="#" class="block hover:text-blue-200 transition">Contacto</a>
 
         <div class="flex flex-col gap-3 pt-4 border-t border-blue-400">
-          <button
-            class="px-4 py-2 border border-white rounded-lg hover:bg-white hover:text-primary transition"
-          >
-            Iniciar sesión
-          </button>
-
-          <button
-            class="px-4 py-2 bg-white text-primary rounded-lg font-semibold hover:bg-gray-200 transition"
-          >
-            Registrarse
-          </button>
+          <template v-if="!authStore.isAuthenticated">
+            <router-link 
+              to="/login" 
+              @click="isOpen = false"
+              class="px-4 py-2 border border-white rounded-lg text-center hover:bg-white hover:text-primary transition"
+            >
+              Iniciar Sesión
+            </router-link>
+            <router-link 
+              to="/register" 
+              @click="isOpen = false"
+              class="px-4 py-2 bg-white text-primary rounded-lg text-center font-semibold"
+            >
+              Registrarse
+            </router-link>
+          </template>
+          
+          <template v-else>
+            <div class="flex flex-col gap-4">
+              <span class="text-white font-bold text-lg text-center">
+                {{ authStore.user?.name }}
+              </span>
+              <button 
+                @click="handleLogout" 
+                class="px-4 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          </template>
         </div>
       </div>
     </transition>
   </nav>
 
-  <!-- Spacer para evitar que el contenido quede debajo -->
   <div class="h-20"></div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
+import { useAuthStore } from '@/stores/authStore'
+
+const authStore = useAuthStore();
 
 const isOpen = ref(false)
 
@@ -1178,4 +1193,87 @@ Instalar la versión 3.29.2
 ```bash
 npm install primevue@3.29.2
 ```
+## 8.13 Crear componente views/Login.vue
 
+````vue
+<template>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+    <div class="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
+      <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Iniciar Sesión</h2>
+      <div v-if="errorMessage" class="mb-4 p-3 text-sm text-red-600 bg-red-100 rounded-lg">
+        {{ errorMessage }}
+      </div>
+
+      <form @submit.prevent="sendLogin" class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"> Email </label>
+          <input
+            v-model="form.email"
+            type="email"
+            required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1"> Password </label>
+          <input
+            v-model="form.password"
+            type="password"
+            required
+            class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          :disabled="loading"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-300 disabled:opacity-50"
+        >
+          {{ loading ? "Ingresando..." : "Ingresar" }}
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-gray-600">
+        ¿No tienes cuenta?
+        <router-link to="/register" class="text-blue-600 hover:underline font-medium">
+          Regístrate
+        </router-link>
+      </p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref, reactive } from "vue";
+import { useAuthStore } from "@/stores/authStore";
+
+const authStore = useAuthStore();
+//definiendo variables de estado
+const loading = ref(false);
+const errorMessage = ref(null);
+
+const form = reactive({
+  email: "",
+  password: "",
+});
+
+//función para enviar peticion
+const sendLogin = async () => {
+  loading.value = true;
+  errorMessage.value = null;
+  try {
+    await authStore.login(form);
+  } catch (err) {
+    if(err.response.status===401){
+        const {message} = err.response.data;
+        errorMessage.value = message;
+    }
+    
+  } finally {
+    loading.value = false;
+  }
+};
+</script>
+
+``

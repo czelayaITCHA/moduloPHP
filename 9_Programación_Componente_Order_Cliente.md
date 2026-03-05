@@ -129,7 +129,7 @@ export const useAuthStore = defineStore('auth', {
   }
 })
 ```
-## 6. Crear stores/orderStore.js (pinia), para gestionar estos de la orden, 
+## 6. Crear stores/orderStore.js (pinia), para gestionar estos de la orden 
 
 ```js
 import { defineStore } from "pinia";
@@ -195,7 +195,9 @@ export const useOrderStore = defineStore("order",{
             }
         },
     },
-})```
+})
+```
+
 ## 7. Programar boton "Agregar" de ProductCard para hacer que se agreguen productos a la orden
 
 Después de **import { ref, computed } from "vue";**, agregar el siguiente código:

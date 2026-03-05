@@ -1,10 +1,10 @@
 # 9. Programación del proceso de generación de ordenes en la interfaz pública
 
-## 1. Instalar Sweetalert2 
+## 9.1. Instalar Sweetalert2 
 ```bash
 npm install sweetalert2
 ```
-## 2. Hacer que el backend devuelva los roles en el objeto $user, modificar el método privado responseWithToken, de AuthController, quedando de la siguiente manera:
+## 9.2. Hacer que el backend devuelva los roles en el objeto $user, modificar el método privado responseWithToken, de AuthController, quedando de la siguiente manera:
 ```php
 protected function responseWithToken($token){
         return response()->json([
@@ -15,11 +15,11 @@ protected function responseWithToken($token){
         ]);
     }
 ```
-## 3. Instalar plugin oficial para mantener en memoria los valores de los estados
+## 9.3. Instalar plugin oficial para mantener en memoria los valores de los estados
 ```bash
 npm install pinia-plugin-persistedstate
 ```
-## 4. Actualizar el archivo main.js
+## 9.4. Actualizar el archivo main.js
 ```js
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -47,7 +47,7 @@ app.use(PrimeVue)
 app.mount('#app')
 
 ```
-## 5. Actualizar authStore
+## 9.5. Actualizar authStore
 ```js
 import { defineStore } from 'pinia'
 import api from '@/services/api'
@@ -129,7 +129,7 @@ export const useAuthStore = defineStore('auth', {
   }
 })
 ```
-## 6. Crear stores/orderStore.js (pinia), para gestionar estos de la orden 
+## 9.6. Crear stores/orderStore.js (pinia), para gestionar estos de la orden 
 
 ```js
 import { defineStore } from "pinia";
@@ -197,8 +197,33 @@ export const useOrderStore = defineStore("order",{
     },
 })
 ```
-
-## 7. Programar boton "Agregar" de ProductCard para hacer que se agreguen productos a la orden
+## 9.7 Agregar botón para acceder al componente OrderView en el componente Navbar.vue
+* Agregar la importación de **useOrderStore**
+  ```js
+  import { useOrderStore } from '@/stores/orderStore';
+  ```
+* Crear el objeto orderStore
+  ```js
+  const orderStore = useOrderStore();
+  ``` 
+* En el template agregar link, hacerlo después del link de ofertas
+```vue
+ <router-link v-if="authStore.isAuthenticated && authStore.isCliente" 
+   to="/order"
+   class="relative ml-6 hover:text-blue-200 transition"
+  >
+     <i class="pi pi-shopping-cart text-2xl"></i>
+     <!--Contador de productos -->
+     <span v-if="orderStore.totalItems > 0"
+        class="absolute -top-2 -right-3
+        bg-red-500 text-white text-xs font-bold rounded-full px-2 py-0.5"
+     >
+      {{ orderStore.totalItems }}
+    </span>
+ </router-link>
+```
+  
+## 9.8. Programar boton "Agregar" de ProductCard para hacer que se agreguen productos a la orden
 
 Después de **import { ref, computed } from "vue";**, agregar el siguiente código:
 
@@ -223,7 +248,7 @@ Y el template, busca el boton Agregar y llama en el evento click la función **a
  Agregar
 </button>
 ```
-## 8. Crear componente views/OrderView.vue
+## 9.9. Crear componente views/OrderView.vue
 ````vue
 <template>
   <div class="container mx-auto px-6 py-10">
@@ -530,7 +555,7 @@ const confirm = async () => {
 
 </script>
 ````
-## 9 Crear ruta
+## 9.10 Crear ruta para acceder al componente
 ```js
 // ruta para componente order - interfaz publica
     {
@@ -541,4 +566,4 @@ const confirm = async () => {
     },
 ```
 
-## 9. Crear ruta 
+

@@ -828,11 +828,11 @@ onMounted(async () => {
   await orderStore.fetchMyOrders(authStore.user.id);
 });
 
-function openDetail(order) {
+const openDetail = (order) =>{
   selectedOrder.value = order;
 }
 
-function formatCurrency(value) {
+const formatCurrency = (value) =>{
   return new Intl.NumberFormat("es-SV", {
     style: "currency",
     currency: "USD",
@@ -840,11 +840,11 @@ function formatCurrency(value) {
   }).format(value);
 }
 
-function formatDate(date) {
+const formatDate = (date) => {
   return new Date(date).toLocaleDateString("es-SV");
 }
 
-function statusClass(status) {
+const statusClass = (status) =>{
   switch (status) {
     case "PENDIENTE":
       return "bg-yellow-100 text-yellow-700";
@@ -863,7 +863,7 @@ function statusClass(status) {
   }
 }
 
-async function cancel(order) {
+const cancel = async(order) => {
   const result = await Swal.fire({
     title: "¿Cancelar orden?",
     text: `Orden ${order.correlativo}`,

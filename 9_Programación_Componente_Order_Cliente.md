@@ -891,3 +891,80 @@ async function cancel(order) {
 }
 </script>
 ````
+### 9.11.3 Crear la ruta para cargar el compomnente MisOrdenes.vue en el archivo index.js
+
+```js
+{
+   path: '/mis-ordenes',
+   name: 'mis-ordenes',
+   component: () => import('@/views/MisOrdenes.vue'),
+   meta: { requiresAuth: true }
+},
+```
+### 9.11.4 Crear el link en Navbar.vue para cargar la ruta del componente
+
+Colocar después del enlace de ofertas
+```vue
+<router-link
+   v-if="authStore.isAuthenticated && authStore.isCliente"
+   to="/mis-ordenes"
+   class="flex items-center gap-2 text-white hover:text-blue-600"
+>
+   <i class="pi pi-shopping-bag"></i>
+   Mis Órdenes
+</router-link>
+```
+
+El resultado debe ser algo similar a la siguiente imágen:
+
+<img width="1365" height="534" alt="image" src="https://github.com/user-attachments/assets/af98abe2-983f-4d48-a92b-7d766954370a" />
+
+Y al acceder al componente:
+
+<img width="1339" height="350" alt="image" src="https://github.com/user-attachments/assets/1fae2a3b-a321-4302-a502-2798b1541ee5" />
+
+Formulario modal mostrando el detalle de la orden
+
+<img width="1241" height="480" alt="image" src="https://github.com/user-attachments/assets/952de34a-eb05-4753-aff9-c3f106f17e41" />
+
+## 9.12 implementar guards para protección de rutas en el archivo index.js
+
+importar useAuthStore 
+
+```js
+import { useAuthStore } from '@/stores/authStore'
+```
+agregar el siguiente código antes de export default 
+
+```js
+router.beforeEach((to, from, next) => {
+
+  const authStore = useAuthStore()
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login')
+    return
+  }
+
+  if (to.meta.role) {
+
+    const hasRole = authStore.user?.roles?.some(
+      r => r.name === to.meta.role
+    )
+
+    if (!hasRole) {
+      next('/')
+      return
+    }
+
+  }
+
+  if (to.meta.guest && authStore.isAuthenticated) {
+    next('/')
+    return
+  }
+
+  next()
+
+})
+```

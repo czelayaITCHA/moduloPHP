@@ -441,12 +441,23 @@ router.beforeEach((to) => {
   // validación de roles
   if (to.meta.role) {
 
-    const hasRole = authStore.user?.roles?.some(
-      r => r.name === to.meta.role
-    )
+    const userRoles = authStore.user?.roles?.map(r => r.name) || []
 
-    if (!hasRole) {
-      return '/'
+    // si la ruta acepta varios roles
+    if (Array.isArray(to.meta.role)) {
+
+      const hasRole = to.meta.role.some(role => userRoles.includes(role))
+
+      if (!hasRole) return '/'
+
+    } 
+    // si la ruta acepta un solo rol
+    else {
+
+      if (!userRoles.includes(to.meta.role)) {
+        return '/'
+      }
+
     }
 
   }

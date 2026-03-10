@@ -560,12 +560,13 @@ app.use(router)
 app.mount('#app')
 
 ```
-*  Componente Marcas.vue ajustado para cargar las marcas
+*  Componente Marcas.vue ajustado para cargar las marcas, actualizado con todas las funcionalidades de un CRUD
 
 ````vue
 
 <template>
     <div>
+        <Toast />
         <div class="card">
             <Toolbar class="mb-4">
                 <template #start>
@@ -616,7 +617,7 @@ app.mount('#app')
         <Dialog v-model:visible="deleteMarcaDialog" :style="{width: '450px'}" header="Confirmación" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-                <span v-if="product">Seguro/a de eliminar la marca <b>{{marca.nombre}}</b>?</span>
+                <span v-if="marca">Seguro/a de eliminar la marca <b>{{marca.nombre}}</b>?</span>
             </div>
             <template #footer>
                 <Button label="No" icon="pi pi-times" text @click="deleteMarcaDialog = false"/>
@@ -671,34 +672,117 @@ const loadMarcas = async () =>{
     }
 }
 
-const saveOrUpdate = () => {
+const saveOrUpdate = async () => {
+
     submitted.value = true;
 
-    if (marca?.value.nombre?.trim()) {
-        if (marca.value.id) {
-            //petición para actualizar la marca
-        }
-        else {
-            //petición para registrar nueva marca
-        }
+    if (!marca?.value.nombre?.trim()) {
+        return;
+    }
 
+    try {
+        let response;
+        if (marca.value.id) {
+            // Petición para actualizar la marca
+            response = await api.put(`/marcas/${marca.value.id}`, marca.value);
+        } else {
+            // Registro de nueva marca
+            response = await api.post('/marcas', marca.value);
+        }
+        //desestructurando status y data de la respuesta
+        const { status, data } = response;
+        if (status === 201) {
+            marcas.value.unshift(data.marca);
+            toast.add({
+                severity: 'success',
+                summary: 'Registro exitoso',
+                detail: data.message,
+                life: 3000
+            });
+        }
+        if (status === 202) {
+            const index = marcas.value.findIndex(m => m.id === data.marca.id);
+            if (index !== -1) {
+                marcas.value[index] = data.marca;
+            }
+            toast.add({
+                severity: 'success',
+                summary: 'Actualización exitosa',
+                detail: data.message,
+                life: 3000
+            });
+        }
         dialog.value = false;
         marca.value = {};
+        submitted.value = false;
+    } catch (error) {
+        let message = "Error inesperado";
+
+        if (error.response?.data?.errores) {
+            const errores = error.response.data.errores;
+            message = Object.values(errores)[0][0];
+        } else if (error.response?.data?.message) {
+            message = error.response.data.message;
+        }
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 4000
+        });
+        console.error(error);
     }
 };
+
 const editMarca = (mark) => {
     marca.value = {...mark};
     dialog.value = true;
 };
+
 const confirmDeleteMarca = (mark) => {
     marca.value = mark;
     deleteMarcaDialog.value = true;
 };
-const deleteMarca = () => {
-    marcas.value = marcas.value.filter(val => val.id !== marca.value.id);
-    deleteMarcaDialog.value = false;
-    marca.value = {};
-    toast.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
+
+const deleteMarca = async () => {
+
+    try {
+        const response = await api.delete(`/marcas/${marca.value.id}`);
+        const { status, data } = response;
+
+        if (status === 200) {
+            marcas.value = marcas.value.filter(val => val.id !== marca.value.id);
+            toast.add({
+                severity: 'success',
+                summary: 'Eliminado',
+                detail: data.message,
+                life: 3000
+            });
+
+        }
+        deleteMarcaDialog.value = false;
+        marca.value = {};
+
+    } catch (error) {
+        let message = "Error inesperado";
+        if (error.response?.status === 409) {
+            message = error.response.data.message;
+        }
+        else if (error.response?.status === 404) {
+            message = error.response.data.message;
+        }
+        else if (error.response?.data?.message) {
+            message = error.response.data.message;
+        }
+        toast.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: message,
+            life: 4000
+        });
+        deleteMarcaDialog.value = false;
+        console.error(error);
+    }
 };
 
 //funciones computables para determinar si esta agregando o etidando un registro
@@ -711,7 +795,6 @@ const labelButton = computed(() => {
 })
 
 </script>
-
 ````
 
 

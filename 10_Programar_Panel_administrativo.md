@@ -560,7 +560,160 @@ app.use(router)
 app.mount('#app')
 
 ```
-*  
+*  Componente Marcas.vue ajustado para cargar las marcas
+
+````vue
+
+<template>
+    <div>
+        <div class="card">
+            <Toolbar class="mb-4">
+                <template #start>
+                    <Button label="Nueva Marca" icon="pi pi-plus" severity="success" class="mr-2" @click="openNew" />
+                </template>
+            </Toolbar>
+
+            <DataTable ref="dt" :value="marcas" dataKey="id"
+                :paginator="true" :rows="10" :filters="filters"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" 
+                :rowsPerPageOptions="[5,10,25]"
+                currentPageReportTemplate="Mostrando del {first} al {last} de {totalRecords} marcas">
+                <template #header>
+                    <div class="flex flex-wrap gap-2 items-center justify-between">
+                        <h4 class="m-0">Gestión de Marcas</h4>
+
+                        <div class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <InputText v-model="filters['global'].value" placeholder="Buscar..." />
+                        </div>
+                    </div>
+                </template>
+                <Column field="nombre" header="Marca" sortable style="min-width:16rem"></Column>
+                <Column :exportable="false" style="min-width:8rem">
+                    <template #body="slotProps">
+                        <div class="flex gap-2">
+                            <Button icon="pi pi-pencil" outlined rounded @click="editMarca(slotProps.data)" />
+                            <Button icon="pi pi-trash" outlined rounded severity="danger" @click="confirmDeleteMarca(slotProps.data)" />
+                        </div>
+                    </template>
+                </Column>
+            </DataTable>
+        </div>
+        <!--Formulario modal de primevue-->
+        <Dialog v-model:visible="dialog" :style="{width: '450px'}" :header="titleDialog" :modal="true" class="p-fluid">
+            <div class="field">
+                <label for="name">Nombre</label>
+                <InputText id="nombre" v-model.trim="marca.nombre" required="true" autofocus :invalid="submitted && !marca.nombre" />
+                <small class="p-error" v-if="submitted && !marca.nombre">Nombre es requerido.</small>
+            </div>
+            
+            <template #footer>
+                <Button label="Cancelar" icon="pi pi-times" text @click="hideDialog"/>
+                <Button :label="labelButton" security="primary" icon="pi pi-check" text @click="saveOrUpdate" />
+            </template>
+        </Dialog>
+
+        <Dialog v-model:visible="deleteMarcaDialog" :style="{width: '450px'}" header="Confirmación" :modal="true">
+            <div class="confirmation-content">
+                <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
+                <span v-if="product">Seguro/a de eliminar la marca <b>{{marca.nombre}}</b>?</span>
+            </div>
+            <template #footer>
+                <Button label="No" icon="pi pi-times" text @click="deleteMarcaDialog = false"/>
+                <Button label="Si" icon="pi pi-check" text @click="deleteMarca" />
+            </template>
+        </Dialog>
+    </div>
+</template>
+
+<script setup>
+import { ref, onMounted, computed } from 'vue';
+import { FilterMatchMode } from 'primevue/api';
+import { useToast } from 'primevue/usetoast';
+import api from '@/services/api';
+
+onMounted(() => {
+    loadMarcas()
+});
+
+const toast = useToast();
+const dt = ref();
+const marcas = ref();
+const marca = ref({
+    id:null,
+    nombre:''
+});
+const dialog = ref(false);
+const deleteMarcaDialog = ref(false);
+
+const filters = ref({
+    'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+});
+const submitted = ref(false);
+
+const openNew = () => {
+    marca.value = {};
+    submitted.value = false;
+    dialog.value = true;
+};
+const hideDialog = () => {
+    dialog.value = false;
+    submitted.value = false;
+};
+
+//función para obtener las marcas
+const loadMarcas = async () =>{
+    try{
+        const {data} = await api.get('/marcas');
+        marcas.value = data;
+    }catch(err){
+        console.log("Error al obtener las marcas", err)
+    }
+}
+
+const saveOrUpdate = () => {
+    submitted.value = true;
+
+    if (marca?.value.nombre?.trim()) {
+        if (marca.value.id) {
+            //petición para actualizar la marca
+        }
+        else {
+            //petición para registrar nueva marca
+        }
+
+        dialog.value = false;
+        marca.value = {};
+    }
+};
+const editMarca = (mark) => {
+    marca.value = {...mark};
+    dialog.value = true;
+};
+const confirmDeleteMarca = (mark) => {
+    marca.value = mark;
+    deleteMarcaDialog.value = true;
+};
+const deleteMarca = () => {
+    marcas.value = marcas.value.filter(val => val.id !== marca.value.id);
+    deleteMarcaDialog.value = false;
+    marca.value = {};
+    toast.add({severity:'success', summary: 'Successful', detail: 'Product Deleted', life: 3000});
+};
+
+//funciones computables para determinar si esta agregando o etidando un registro
+const titleDialog = computed(() => {
+    return marca.value.id ? "Edición de Marcas" : "Registro de Marcas"
+})
+
+const labelButton = computed(() => {
+    return marca.value.id ? "Actualizar" : "Guardar"
+})
+
+</script>
+
+````
+
 
 
 

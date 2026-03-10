@@ -796,8 +796,29 @@ const labelButton = computed(() => {
 
 </script>
 ````
+## 10.12 Proceso para conversión de mensajes de validación a español en laravel
+* Instalar repositorio oficial de idiomas
+```bash
+composer require laravel-lang/common
+```
+* Publicar el idioma español
+```bash
+php artisan lang:add es
+```
+Lo anterior debe crear la carpeta lang/es
 
+<img width="223" height="605" alt="image" src="https://github.com/user-attachments/assets/d500350f-d282-468f-81c8-cd0452811357" />
 
+* editar el achivo de configuración **config/app.php** y cambiar a español las siguientes variables
 
+```php
+locale' => env('APP_LOCALE', 'es'),
+'fallback_locale' => env('APP_FALLBACK_LOCALE', 'es'),
+```
+* camnbiar a **es**, el valor de las constantes en el archivo .env
 
-
+```php
+APP_LOCALE=es
+APP_FALLBACK_LOCALE=es
+```
+  

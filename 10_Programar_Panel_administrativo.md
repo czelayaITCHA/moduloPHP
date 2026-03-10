@@ -489,8 +489,78 @@ src
      ├ Usuarios.vue
      └ Reportes.vue
 ```
+## 10.11 Programar CRUD de tabla independiente (marcas)
+* Como se usarán compomentes de primevue, se debe importar, para ello vamos a crear la carpeta **utils** dentro de **src** y luego el archivo **primevue.js** que contendrá lo siguiente:
+```js
+import PrimeVue from 'primevue/config'
+
+//servicios
+import ToastService from 'primevue/toastservice';
+import ConfirmationService from 'primevue/confirmationservice'
+
+//componentes
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Toolbar from 'primevue/toolbar';
+import Toast from 'primevue/toast';
+import ConfirmDialog from 'primevue/confirmdialog';
+import Card from 'primevue/card';
 
 
+export default function setupPrimeVue(app){
+    //registramos en app
+    app.use(PrimeVue)
+    //registramos los servicios
+    app.use(ToastService)
+    app.use(ConfirmationService)
+    //componentes
+    app.component('Button', Button)
+    app.component('Dialog', Dialog)
+    app.component('InputText', InputText)
+    app.component('DataTable', DataTable)
+    app.component('Column', Column)
+    app.component('Toolbar', Toolbar)
+    app.component('Toast', Toast)
+    app.component('ConfirmDialog', ConfirmDialog)
+    app.component('Card', Card)
+}
+``` 
+* importamos el archivo en **main.js** quedando de la siguiente manera
+```js
+import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import { createPinia } from 'pinia'
+//importamos el plugin de pinia que mantiene la persistencia del estado
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+import setupPrimeVue from './utils/primevue'
+
+// 1. IMPORTAR ESTILOS DE Tailwind
+import './assets/main.css' 
+
+// 2. ESTILOS DE PRIMEVUE
+import 'primevue/resources/themes/saga-blue/theme.css'
+import 'primevue/resources/primevue.css'
+import 'primeicons/primeicons.css'
+
+const app = createApp(App)
+
+setupPrimeVue(app)
+//creamos instancia de pinia
+const pinia = createPinia()
+//hacemos que pinia use el plugin de persistencia del estado
+pinia.use(piniaPluginPersistedstate)
+//hacemos que el objeto vue(app) use pinia
+app.use(pinia)
+app.use(router)
+app.mount('#app')
+
+```
+*  
 
 
 

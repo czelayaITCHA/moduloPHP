@@ -642,3 +642,87 @@ const submit = () => {
 }
 </style>
 ````
+
+* Importante revisar y crear los métodos de ProductoController
+
+método **destroy** se dejó como tarea
+```php
+public function destroy(string $id)
+    {
+         try {
+
+            DB::beginTransaction();
+
+            // Buscar producto
+            $producto = Producto::with('imagenes','orderItems')->findOrFail($id);
+
+            // Validar si tiene órdenes asociadas
+            if ($producto->orderItems()->exists()) {
+                return response()->json([
+                    'message' => 'No se puede eliminar porque tiene ordenes registradas'
+                ], 409);
+            }
+
+            // Eliminar imágenes físicas y registros
+            foreach ($producto->imagenes as $imagen) {
+
+                $ruta = public_path('images/productos/'.$imagen->nombre);
+
+                if (File::exists($ruta)) {
+                    File::delete($ruta);
+                }
+
+                $imagen->delete();
+            }
+
+            // Eliminar producto
+            $producto->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Producto eliminado correctamente'
+            ], 200);
+
+        } catch (ModelNotFoundException $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Producto no encontrado con el ID = '.$id
+            ], 404);
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Error interno del servidor'
+            ], 500);
+        }
+
+    }
+```
+método toogleActivo para activar/desactivar producto
+```php
+    public function toggleActivo($id)
+    {
+
+        $producto = Producto::findOrFail($id);
+
+        $producto->activo = !$producto->activo;
+
+        $producto->save();
+
+        return response()->json([
+            'message' => $producto->activo
+                ? 'Producto activado'
+                : 'Producto desactivado'
+        ]);
+
+    }
+```
+* Crear ruta en api.php para activar/desactivar producto
+```php
+Route::patch('productos/{id}/toggle-activo',[ProductoController::class,'toggleActivo']);
+```

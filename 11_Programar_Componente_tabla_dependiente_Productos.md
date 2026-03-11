@@ -54,12 +54,17 @@ export default {
 
     delete(id){
         return api.delete(`/productos/${id}`);
-    }
+    },
+    //método agregado para activar/desactivar
+    toggleActivo(id){
+        return api.patch(`/productos/${id}/toggle-activo`)
+    },
 
 }
 ```
 ## 11.1.2 Programar el componentes para gestionar productos
-* Ya se tiene crea el archivo views/admin/Productos.vue, agregar el siguiente código
+* Ya se tiene crea el archivo views/admin/Productos.vue, agregar el siguiente código - actualizado
+
 ````vue
 <template>
   <div class="card">
@@ -68,6 +73,8 @@ export default {
 
     <ProductoTable
       :productos="productos"
+      :marcas="marcas"
+      @toggle="toggleActivo"
       @nuevo="openNew"
       @editar="editProducto"
       @eliminar="confirmDelete"
@@ -87,6 +94,7 @@ import { useToast } from "primevue/usetoast";
 import { useConfirm } from "primevue/useconfirm";
 
 import productoService from "@/services/productoService";
+import marcaService from "@/services/marcaService";
 
 import ProductoTable from "@/components/admin/productos/ProductoTable.vue";
 import ProductoForm from "@/components/admin/productos/ProductoForm.vue";
@@ -97,13 +105,23 @@ const confirm = useConfirm();
 const productos = ref([]);
 const productoDialog = ref(false);
 const producto = ref({});
+const marcas = ref([]);
 
 const loadProductos = async () => {
   const res = await productoService.getAll();
   productos.value = res.data;
 };
 
-onMounted(loadProductos);
+const loadMarcas = async () => {
+  const response = await marcaService.getAll();
+  marcas.value = response.data;
+};
+
+const loadData = () => {
+  loadMarcas();
+  loadProductos();
+};
+onMounted(loadData);
 
 const openNew = () => {
   producto.value = {};
@@ -167,168 +185,277 @@ const guardarProducto = async (formData, id) => {
 
 const confirmDelete = (p) => {
   confirm.require({
-    message: `¿Eliminar ${p.nombre}?`,
+    message: `¿Eliminar el producto ${p.nombre}?`,
     header: "Confirmar",
     icon: "pi pi-info-circle",
 
     accept: async () => {
-      const res = await productoService.delete(p.id);
-
-      toast.add({
-        severity: "success",
-        summary: "Eliminado",
-        detail: res.data.message,
-        life: 3000,
-      });
-
-      loadProductos();
+      try {
+        const res = await productoService.delete(p.id);
+        toast.add({
+          severity: "success",
+          summary: "Eliminado",
+          detail: res.data.message,
+          life: 3000,
+        });
+        loadProductos();
+      } catch (error) {
+        if (error.response) {
+          const data = error.response.data;
+          // capturando errores de validación
+          if (data.errors) {
+            Object.values(data.errors).forEach((err) => {
+              toast.add({
+                severity: "warn",
+                summary: "Validación",
+                detail: err[0],
+                life: 4000,
+              });
+            });
+          } else {
+            toast.add({
+              severity: "warn",
+              summary: "Aviso",
+              detail: data.message,
+              life: 4000,
+            });
+          }
+        } else {
+          toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: "No se pudo conectar con el servidor",
+            life: 4000,
+          });
+        }
+      }
     },
   });
 };
+
+//función para activar/desactivar
+const toggleActivo = async (producto) => {
+  try {
+    const res = await productoService.toggleActivo(producto.id);
+
+    toast.add({
+      severity: "success",
+      summary: "Estado actualizado",
+      detail: res.data.message,
+      life: 3000,
+    });
+    loadProductos();
+  } catch (error) {
+    toast.add({
+      severity: "error",
+      summary: "Error",
+      detail: error.response?.data?.message || "Error del servidor",
+      life: 4000,
+    });
+  }
+};
 </script>
+
 ````
 
 * Crear el componente components/admin/productos/ProductoTable.vue
 ````vue
 <template>
-<DataTable :value="productos" paginator :rows="10" responsiveLayout="scroll">
-    <template #header>
-        <div class="table-header">
-            <h3>Productos</h3>
-            <Button
-            label="Nuevo"
-            icon="pi pi-plus"
-            severity="success"
-            @click="$emit('nuevo')"
-        />
+  <DataTable
+    :value="productosFiltrados"
+    paginator
+    :rows="10"
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    dataKey="id"
+    :filters="filters"
+    :globalFilterFields="['nombre', 'descripcion', 'modelo', 'marca.nombre']"
+    responsiveLayout="scroll"
+  >
+    <!-- HEADER -->
 
+    <template #header>
+      <div class="table-header">
+        <h3 class="text-2xl">Gestión de Productos</h3>
+
+        <div class="header-filters">
+          <span class="p-input-icon-left">
+            <i class="pi pi-search" />
+            <InputText v-model="filters['global'].value" placeholder="Buscar producto" />
+          </span>
+
+          <Dropdown
+            v-model="marcaSeleccionada"
+            :options="marcas"
+            optionLabel="nombre"
+            placeholder="Filtrar marca"
+            class="marca-dropdown"
+            showClear
+          />
+
+          <Button label="Nuevo" icon="pi pi-plus" severity="success" @click="$emit('nuevo')" />
         </div>
+      </div>
     </template>
 
-    <Column field="nombre" header="Nombre" />
+    <!-- COLUMNAS -->
+
+    <Column field="nombre" header="Nombre" sortable />
 
     <Column field="descripcion" header="Descripción" />
 
-    <Column field="modelo" header="Modelo" />
+    <Column field="modelo" header="Modelo" sortable />
 
     <!-- Marca -->
+
     <Column header="Marca">
-    <template #body="slotProps">
+      <template #body="slotProps">
         {{ slotProps.data.marca?.nombre }}
-    </template>
+      </template>
     </Column>
 
     <!-- Precio -->
-    <Column header="Precio">
-    <template #body="slotProps">
+
+    <Column header="Precio" sortable>
+      <template #body="slotProps">
         {{ formatCurrency(slotProps.data.precio) }}
-    </template>
+      </template>
     </Column>
 
-    <Column field="stock" header="Stock" />
+    <Column field="stock" header="Stock" sortable />
 
-    <!-- Acciones -->
-    <Column header="Acciones" style="width:150px">
+    <Column header="Activo">
+      <template #body="slotProps">
+        <InputSwitch :modelValue="slotProps.data.activo" @change="emit('toggle', slotProps.data)" />
+      </template>
+    </Column>
 
-    <template #body="slotProps">
+    <!-- ACCIONES -->
 
+    <Column header="Acciones" style="width: 140px">
+      <template #body="slotProps">
         <div class="acciones">
+          <Button icon="pi pi-pencil" severity="warning" @click="$emit('editar', slotProps.data)" />
 
-            <Button
-            icon="pi pi-pencil"
-            severity="warning"
-            class="btn-editar"
-            @click="$emit('editar',slotProps.data)"
-            />
-
-            <Button
-            icon="pi pi-trash"
-            severity="danger"
-            class="btn-eliminar"
-            @click="$emit('eliminar',slotProps.data)"
-            />
-
+          <Button icon="pi pi-trash" severity="danger" @click="$emit('eliminar', slotProps.data)" />
         </div>
-
-    </template>
-
+      </template>
     </Column>
-
-</DataTable>
-
+  </DataTable>
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
+import { FilterMatchMode } from "primevue/api";
 
-defineProps({
-    productos: Array
-})
+const emit = defineEmits(["edit", "toggle", "delete"]);
+
+const props = defineProps({
+  productos: Array,
+  marcas: Array,
+});
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
+const marcaSeleccionada = ref(null);
+
+const productosFiltrados = computed(() => {
+  if (!marcaSeleccionada.value) {
+    return props.productos;
+  }
+
+  return props.productos.filter((p) => p.marca?.id === marcaSeleccionada.value.id);
+});
 
 const formatCurrency = (value) => {
-    return new Intl.NumberFormat('es-SV', {
-        style: 'currency',
-        currency: 'USD'
-    }).format(value)
-
-}
-
+  return new Intl.NumberFormat("es-SV", {
+    style: "currency",
+    currency: "USD",
+  }).format(value);
+};
 </script>
 
 <style scoped>
-
-.table-header{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-bottom:10px;
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-.acciones{
-display:flex;
-gap:10px;
+.header-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
-.btn-editar{
-margin-right:6px;
+.marca-dropdown {
+  min-width: 160px;
 }
 
+.acciones {
+  display: flex;
+  gap: 8px;
+}
+
+/* RESPONSIVO */
+
+@media (max-width: 768px) {
+  .table-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-filters {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .marca-dropdown {
+    width: 100%;
+  }
+}
 </style>
+
 ```` 
 * Crear el componente components/admin/productos/ProductoForm.vue
 
 ````vue
 <template>
-  <Dialog
-    v-model:visible="dialogVisible"
-    header="Producto"
-    :style="{ width: '600px' }"
-  >
+  <Dialog v-model:visible="dialogVisible" :header="titleDialog" :style="{ width: '600px' }">
     <div class="p-fluid grid">
       <div class="col-12">
+        <label class="form-label">Nombre</label>
         <InputText v-model="producto.nombre" placeholder="Nombre" />
       </div>
 
-      <div class="col-12">
-        <Textarea
-          v-model="producto.descripcion"
-          rows="3"
-          placeholder="Descripción"
-        />
+      <div class="col-12 mt-2">
+        <label class="form-label">Descripción</label>
+        <Textarea v-model="producto.descripcion" rows="3" placeholder="Descripción" />
       </div>
 
       <div class="col-6">
+        <label class="form-label">Modelo</label>
         <InputText v-model="producto.modelo" placeholder="Modelo" />
       </div>
 
-      <div class="col-6">
+      <div class="col-6 mt-2">
+        <label class="form-label">Precio</label>
         <InputNumber v-model="producto.precio" placeholder="Precio" />
       </div>
 
-      <div class="col-6">
+      <div class="col-6 mt-2">
+        <label class="form-label">Stock</label>
         <InputNumber v-model="producto.stock" placeholder="Stock" />
       </div>
 
-      <div class="col-6">
+      <div class="col-6 mt-2">
+        <label class="form-label">Estado</label>
         <Dropdown
           v-model="producto.activo"
           :options="estados"
@@ -338,7 +465,8 @@ margin-right:6px;
         />
       </div>
 
-      <div class="col-6">
+      <div class="col-6 mt-2">
+        <label class="form-label">Marca</label>
         <Dropdown
           v-model="producto.marca"
           :options="marcas"
@@ -347,7 +475,8 @@ margin-right:6px;
         />
       </div>
 
-      <div class="col-6">
+      <div class="col-6 mt-2">
+        <label class="form-label">Categoría</label>
         <Dropdown
           v-model="producto.categoria"
           :options="categorias"
@@ -359,13 +488,7 @@ margin-right:6px;
 
     <h4 class="mt-4">Imágenes</h4>
 
-    <FileUpload
-      multiple
-      customUpload
-      mode="basic"
-      accept="image/*"
-      @select="onSelect"
-    />
+    <FileUpload multiple customUpload mode="basic" accept="image/*" @select="onSelect" />
 
     <div class="flex gap-3 mt-3">
       <img
@@ -377,14 +500,9 @@ margin-right:6px;
     </div>
 
     <template #footer>
-      <Button
-        label="Cancelar"
-        icon="pi pi-times"
-        severity="secondary"
-        @click="close"
-      />
+      <Button label="Cancelar" icon="pi pi-times" severity="secondary" @click="close" />
 
-      <Button label="Guardar" icon="pi pi-check" @click="submit" />
+      <Button :label="labelButton" icon="pi pi-check" @click="submit" />
     </template>
   </Dialog>
 </template>
@@ -395,6 +513,7 @@ import { ref, watch, onMounted, computed } from "vue";
 import categoriaService from "@/services/categoriaService";
 import marcaService from "@/services/marcaService";
 
+const BASE_IMAGE_URL = "http://localhost:8000/images/productos/";
 
 const props = defineProps({
   visible: Boolean,
@@ -403,9 +522,19 @@ const props = defineProps({
 
 const emit = defineEmits(["update:visible", "guardar"]);
 
+//propiedades computables
 const dialogVisible = computed({
   get: () => props.visible,
   set: (val) => emit("update:visible", val),
+});
+
+//funciones computables para determinar si esta agregando o etidando un registro
+const titleDialog = computed(() => {
+  return producto.value.id ? "Edición de Productos" : "Registro de Productos";
+});
+
+const labelButton = computed(() => {
+  return producto.value.id ? "Actualizar" : "Guardar";
 });
 
 const producto = ref({});
@@ -414,27 +543,23 @@ const marcas = ref([]);
 const preview = ref([]);
 const imagenes = ref([]);
 
-
 const estados = [
   { label: "Activo", value: 1 },
   { label: "Inactivo", value: 0 },
 ];
 
 const loadPreviewImages = (producto) => {
-    preview.value = []
-    if (producto?.imagenes) {
-        producto.imagenes.forEach(img => {
-            preview.value.push({
-                id: img.id,
-                url: img.url,
-                existente: true
-            })
-
-        })
-
-    }
-
-}
+  preview.value = [];
+  if (producto?.imagenes) {
+    producto.imagenes.forEach((img) => {
+      preview.value.push({
+        id: img.id,
+        url: BASE_IMAGE_URL + img.nombre,
+        existente: true,
+      });
+    });
+  }
+};
 watch(
   () => props.producto,
   (v) => {
@@ -448,12 +573,12 @@ watch(
     producto.value = {
       ...v,
       precio: v.precio != null ? Number(v.precio) : null,
-      stock: v.stock != null ? Number(v.stock) : null
+      stock: v.stock != null ? Number(v.stock) : null,
     };
 
     loadPreviewImages(v);
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const loadData = async () => {
@@ -467,18 +592,14 @@ const loadData = async () => {
 onMounted(loadData);
 
 const onSelect = (e) => {
+  e.files.forEach((file) => {
+    imagenes.value.push(file);
 
-    e.files.forEach(file => {
-
-        imagenes.value.push(file)
-
-        preview.value.push({
-            url: URL.createObjectURL(file),
-            existente: false
-        })
-
-    })
-
+    preview.value.push({
+      url: URL.createObjectURL(file),
+      existente: false,
+    });
+  });
 };
 
 const close = () => emit("update:visible", false);
@@ -495,4 +616,29 @@ const submit = () => {
   emit("guardar", formData, producto.value.id);
 };
 </script>
+
+<style scoped>
+.form-label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.imagenes-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.preview-img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+</style>
 ````

@@ -189,15 +189,12 @@ const confirmDelete = (p) => {
 ````
 
 * Crear el componente components/admin/productos/ProductoTable.vue
-  ````vue
-  <template>
-
+````vue
+<template>
 <DataTable :value="productos" paginator :rows="10" responsiveLayout="scroll">
-
     <template #header>
         <div class="table-header">
             <h3>Productos</h3>
-
             <Button
             label="Nuevo"
             icon="pi pi-plus"
@@ -296,8 +293,9 @@ margin-right:6px;
 }
 
 </style>
-  ```` 
+```` 
 * Crear el componente components/admin/productos/ProductoForm.vue
+
 ````vue
 <template>
   <Dialog
@@ -437,8 +435,6 @@ const loadPreviewImages = (producto) => {
     }
 
 }
-
-
 watch(
   () => props.producto,
   (v) => {

@@ -152,3 +152,51 @@ const submit = () => {
     </GuestLayout>
 </template>
 ```` 
+## 7. Crear carpeta Components/nav, para personalizar el panel administrativo con los siguientes Archivos
+
+<img width="172" height="135" alt="image" src="https://github.com/user-attachments/assets/b032bc1b-6e3d-4676-b781-7144f017a047" />
+* Navbar.vue
+  ````vue
+  <script setup>
+import { Link } from '@inertiajs/vue3';
+import Button from 'primevue/button';
+
+defineEmits(['toggle-sidebar']);
+</script>
+
+<template>
+    <header class="h-16 bg-indigo-700 text-white flex items-center justify-between px-4 z-50 shadow-md shrink-0">
+        <div class="flex items-center gap-4">
+            <Button 
+                icon="pi pi-bars" 
+                text 
+                @click="$emit('toggle-sidebar')" 
+                class="!text-white hover:!bg-indigo-600 !w-10 !h-10 border-none" 
+            />
+            <h1 class="text-sm md:text-lg font-bold tracking-wide uppercase opacity-90 truncate">
+                Panel Administrativo del Sistema
+            </h1>
+        </div>
+
+        <div class="flex items-center gap-2 md:gap-4">
+            <div class="hidden sm:flex flex-col text-right border-r border-indigo-500 pr-4">
+                <span class="text-xs font-bold leading-none">{{ $page.props.auth.user.name }}</span>
+                <span class="text-[10px] text-indigo-200 mt-1 font-medium italic">Sesión Activa</span>
+            </div>
+            
+            <Link :href="route('logout')" method="post" as="button" 
+                  class="flex items-center gap-2 bg-indigo-800 hover:bg-red-600 px-3 py-2 rounded-lg transition-all text-xs font-bold shadow-md border-none text-white">
+                <i class="pi pi-power-off"></i>
+                <span class="hidden md:inline uppercase text-[10px]">Salir</span>
+            </Link>
+        </div>
+    </header>
+</template>
+  ````
+* Sidebar.vue
+````vue
+
+````
+* Footer.vue
+## Crear el componente AdminLayout.vue
+Rvisar archivos de ruta auth.web, web.php

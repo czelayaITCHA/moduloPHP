@@ -176,7 +176,8 @@ const submit = () => {
 
 <img width="172" height="135" alt="image" src="https://github.com/user-attachments/assets/b032bc1b-6e3d-4676-b781-7144f017a047" />
 * Navbar.vue
-  ````vue
+  
+````vue
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import Button from 'primevue/button';
@@ -214,6 +215,7 @@ defineEmits(['toggle-sidebar']);
 </template>
 ````
 * Sidebar.vue
+  
 ````vue
 <script setup>
 import { Link } from '@inertiajs/vue3';
@@ -283,7 +285,8 @@ const handleLinkClick = (routeStr) => {
 </template>
 ````
 * Footer.vue
-````
+  
+````vue
 <template>
     <footer class="h-10 bg-white border-t border-slate-200 flex items-center justify-between px-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest shrink-0">
         <div>&copy; 2026 <span class="text-indigo-600 italic">Demo-App</span></div>

@@ -498,3 +498,127 @@ $user->password = Hash::make('12345');
 $user->email_verified_at = now(); // Para saltar la verificación de correo
 $user->save();
 ```
+
+## 13. Actualizacion de componente Register.vue
+
+````vue
+<script setup>
+import AdminLayout from '@/Layouts/AdminLayout.vue';
+import { Head, useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import InputText from 'primevue/inputtext';
+
+const props = defineProps({ users: Array });
+const visible = ref(false);
+
+const form = useForm({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+});
+
+const submit = () => {
+    form.post(route('register'), {
+        onSuccess: () => {
+            visible.value = false;
+            form.reset();
+        },
+    });
+};
+</script>
+
+<template>
+    <AdminLayout>
+        <Head title="Gestión de Usuarios" />
+
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div>
+                    <h1 class="text-xl font-bold text-slate-800">Usuarios del Sistema</h1>
+                    <p class="text-slate-500 text-xs mt-1 uppercase tracking-wider font-semibold">Administración de cuentas</p>
+                </div>
+                <Button label="Nuevo Usuario" icon="pi pi-user-plus" @click="visible = true" 
+                    class="!bg-indigo-600 !border-none !px-5 !py-2.5 !text-white !rounded-lg !text-sm font-bold shadow-indigo-200 shadow-lg" />
+            </div>
+
+            <div class="p-0">
+                <DataTable :value="users" paginator :rows="10" class="p-datatable-sm custom-table">
+                    <Column field="id" header="ID" class="font-mono text-xs" />
+                    <Column field="name" header="Nombre" class="font-semibold text-slate-700" />
+                    <Column field="email" header="Email" />
+                    <Column header="Acciones" class="text-right">
+                        <template #body>
+                            <div class="flex justify-end gap-2">
+                                <Button icon="pi pi-pencil" text severity="secondary" class="!p-2" />
+                                <Button icon="pi pi-trash" text severity="danger" class="!p-2" />
+                            </div>
+                        </template>
+                    </Column>
+                </DataTable>
+            </div>
+        </div>
+
+        <Dialog v-model:visible="visible" modal :showHeader="false" 
+            contentClass="!p-0 !rounded-2xl !overflow-hidden"
+            class="!border-none !shadow-2xl"
+            :style="{ width: '30rem' }">
+            
+            <div class="bg-white">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <span class="text-lg font-bold text-slate-800">Crear Nueva Cuenta</span>
+                    <Button icon="pi pi-times" text rounded severity="secondary" @click="visible = false" />
+                </div>
+
+                <form @submit.prevent="submit" class="p-6 space-y-5">
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Nombre Completo</label>
+                        <InputText v-model="form.name" class="w-full !p-3 !bg-slate-50 !border-slate-200 !rounded-xl focus:!ring-2 focus:!ring-indigo-500/20" placeholder="Ej. Juan Pérez" />
+                        <span v-if="form.errors.name" class="text-red-500 text-[10px] font-bold ml-1">{{ form.errors.name }}</span>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Correo Electrónico</label>
+                        <InputText v-model="form.email" class="w-full !p-3 !bg-slate-50 !border-slate-200 !rounded-xl" placeholder="usuario@dominio.com" />
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Contraseña</label>
+                            <InputText type="password" v-model="form.password" class="w-full !p-3 !bg-slate-50 !border-slate-200 !rounded-xl" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-bold text-slate-400 uppercase tracking-widest ml-1">Confirmar</label>
+                            <InputText type="password" v-model="form.password_confirmation" class="w-full !p-3 !bg-slate-50 !border-slate-200 !rounded-xl" />
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-4">
+                        <Button label="Cancelar" text severity="secondary" @click="visible = false" class="!text-slate-500 font-bold" />
+                        <Button type="submit" label="Guardar Usuario" icon="pi pi-check" :loading="form.processing"
+                            class="!bg-indigo-600 !border-none !px-6 !py-3 !text-white !rounded-xl font-bold shadow-lg shadow-indigo-100" />
+                    </div>
+                </form>
+            </div>
+        </Dialog>
+    </AdminLayout>
+</template>
+
+<style>
+/* Reset para la tabla para que no pierda bordes */
+.custom-table .p-datatable-thead > tr > th {
+    @apply bg-slate-50/50 text-slate-500 text-[11px] uppercase tracking-wider font-bold border-b border-slate-100 p-4 !important;
+}
+.custom-table .p-datatable-tbody > tr > td {
+    @apply p-4 border-b border-slate-50 !important;
+}
+.p-dialog-mask {
+    @apply backdrop-blur-sm bg-slate-900/40 !important;
+}
+</style>
+
+````

@@ -297,5 +297,202 @@ const handleLinkClick = (routeStr) => {
     </footer>
 </template>
 ````
-## Crear el componente AdminLayout.vue
-Rvisar archivos de ruta auth.web, web.php
+## 8. Crear el componente AdminLayout.vue
+````vue
+<script setup>
+import { ref, onMounted } from 'vue';
+import Sidebar from '@/Components/nav/Sidebar.vue';
+import Navbar from '@/Components/nav/Navbar.vue';
+import Footer from '@/Components/nav/Footer.vue';
+
+const isSidebarVisible = ref(true);
+
+// Detectar tamaño de pantalla al montar el componente
+onMounted(() => {
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+});
+
+const checkScreenSize = () => {
+    // Si la pantalla es menor a 1024px (Lg en Tailwind), ocultar sidebar
+    if (window.innerWidth < 1024) {
+        isSidebarVisible.value = false;
+    } else {
+        isSidebarVisible.value = true;
+    }
+};
+
+const toggleSidebar = () => {
+    isSidebarVisible.value = !isSidebarVisible.value;
+};
+
+// Función para cerrar el sidebar automáticamente en móviles al hacer click en una opción
+const handleSidebarItemClick = () => {
+    if (window.innerWidth < 1024) {
+        isSidebarVisible.value = false;
+    }
+};
+</script>
+
+<template>
+    <div class="flex flex-col h-screen w-full bg-slate-50 overflow-hidden font-sans">
+        <Navbar @toggle-sidebar="toggleSidebar" />
+
+        <div class="flex flex-1 overflow-hidden relative">
+            <Sidebar 
+                :isVisible="isSidebarVisible" 
+                @item-click="handleSidebarItemClick"
+            />
+
+            <transition name="fade">
+                <div 
+                    v-if="isSidebarVisible" 
+                    @click="toggleSidebar" 
+                    class="lg:hidden fixed inset-0 bg-slate-900/50 z-30 mt-16"
+                ></div>
+            </transition>
+
+            <div class="flex-1 flex flex-col min-w-0">
+                <main class="flex-1 overflow-y-auto p-4 md:p-6">
+                    <slot />
+                </main>
+                <Footer />
+            </div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+.fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
+.fade-enter-from, .fade-leave-to { opacity: 0; }
+</style>
+````
+
+## 9. Actualizar archivos de rutas auth.web, web.php
+* web.php
+  ```php
+  <?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+// 1. Redirección de Raíz
+Route::get('/', function () {
+    return redirect()->route('dashboard');
+});
+
+// 2. Rutas Protegidas (Solo usuarios autenticados)
+Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // Panel Principal
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+
+    // Gestión de Usuarios (Registro Interno)
+    // Ahora accesible solo si estás logueado
+    Route::get('register', [RegisteredUserController::class, 'create'])
+                ->name('register');
+    
+    Route::post('register', [RegisteredUserController::class, 'store']);
+    
+
+    // Perfil de Usuario
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+});
+
+require __DIR__.'/auth.php';
+  ```
+* auth.php
+```php
+<?php
+
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\VerifyEmailController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('guest')->group(function () {
+        
+    Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+
+    Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+        ->name('password.request');
+
+    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->name('password.email');
+
+    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
+        ->name('password.reset');
+
+    Route::post('reset-password', [NewPasswordController::class, 'store'])
+        ->name('password.store');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('verify-email', EmailVerificationPromptController::class)
+        ->name('verification.notice');
+
+    Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
+        ->name('password.confirm');
+
+    Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
+
+    Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+});
+```
+##  10. Actualizar controlador RegisterUserController.php
+```php
+public function create(): Response
+    {
+        //return Inertia::render('Auth/Register');
+        return Inertia::render('Auth/Register', [
+            'users' => User::all() // Enviamos todos los usuarios a la vista
+        ]);
+    }
+```
+## 11. limpiar rutas 
+```bash
+php artisan route:clear
+
+php artisan ziggy:generate
+```
+## 12. Registrar usuario con tinker
+
+```php
+php artisan tinker
+```
+
+```php
+$user = new App\Models\User();
+$user->name = 'Admon del Sistema';
+$user->email = 'admin@example.com';
+$user->password = Hash::make('12345'); 
+$user->email_verified_at = now(); // Para saltar la verificación de correo
+$user->save();
+```

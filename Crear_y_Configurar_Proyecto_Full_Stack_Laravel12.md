@@ -370,7 +370,8 @@ const handleSidebarItemClick = () => {
 
 ## 9. Actualizar archivos de rutas auth.web, web.php
 * web.php
-  ```php
+  
+```php
   <?php
 
 use App\Http\Controllers\ProfileController;
@@ -407,8 +408,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
-  ```
+```
 * auth.php
+
 ```php
 <?php
 

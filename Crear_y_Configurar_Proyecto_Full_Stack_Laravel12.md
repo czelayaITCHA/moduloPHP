@@ -18,33 +18,53 @@ npm install primevue @primevue/themes
 ```
 ## 4. Personalizar el archivo de estilos app.css 
 ```css
-@layer tailwind-base, primevue, tailwind-utilities;
-
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-@layer primevue {
-    /* Aquí se inyectarán los estilos de Aura */
+/* 1. Definimos el orden de capas para que PrimeVue tenga su espacio */
+@layer tailwind-base, primevue, tailwind-utilities;
+
+@layer base {
+    /* Evitar que Tailwind resetee componentes de PrimeVue */
+    [class^='p-'], [class*=' p-'] {
+        border-style: solid;
+        border-width: 0;
+        box-sizing: border-box;
+    }
+
+    /* 3. Forzamos que el Dialog tenga su fondo blanco y sombra originales */
+    .p-dialog {
+        @apply bg-white shadow-2xl border border-slate-200 !important;
+    }
+    
+    .p-dialog-mask {
+        @apply bg-black/50 backdrop-blur-sm !important;
+    }
 }
 
-/* Para fondo mas suave */
+@layer primevue {
+    /* PrimeVue inyectará Aura aquí. No borrar. */
+}
+
 body {
-    @apply bg-slate-50;
+    @apply bg-slate-50 antialiased text-slate-800;
 }
 ```
 ## 5. Configurar el archivo app.js 
 ```js
 import '../css/app.css';
 import './bootstrap';
+import 'primeicons/primeicons.css'; 
 
+import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
+
+// PrimeVue
 import PrimeVue from 'primevue/config';
 import Aura from '@primevue/themes/aura';
-import 'primeicons/primeicons.css'; 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -56,10 +76,11 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(ZiggyVue)
-            .use(PrimeVue,{
+        const app = createApp({ render: () => h(App, props) });
+        
+        app.use(plugin)
+           .use(ZiggyVue)
+           .use(PrimeVue, {
                 theme: {
                     preset: Aura,
                     options: {
@@ -72,13 +93,12 @@ createInertiaApp({
                     }
                 }
             })
-            .mount(el);
+           .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#4f46e5', // Color indigo-600 para la barra de carga
     },
 });
-
 ```
 ## 6. Mejorar el aspecto del componente Login.vue
 ````vue
@@ -157,7 +177,7 @@ const submit = () => {
 <img width="172" height="135" alt="image" src="https://github.com/user-attachments/assets/b032bc1b-6e3d-4676-b781-7144f017a047" />
 * Navbar.vue
   ````vue
-  <script setup>
+<script setup>
 import { Link } from '@inertiajs/vue3';
 import Button from 'primevue/button';
 
@@ -192,11 +212,87 @@ defineEmits(['toggle-sidebar']);
         </div>
     </header>
 </template>
-  ````
+````
 * Sidebar.vue
 ````vue
+<script setup>
+import { Link } from '@inertiajs/vue3';
 
+const props = defineProps({ 
+    isVisible: Boolean 
+});
+
+const emit = defineEmits(['item-click']);
+
+const menuGroups = [
+    {
+        title: 'Menú Principal',
+        items: [
+            { label: 'Inicio', icon: 'pi pi-home', route: 'dashboard' },
+            { label: 'Catálogos', icon: 'pi pi-database', route: '#' },
+            { label: 'Configuración', icon: 'pi pi-cog', route: '#' },
+            { label: 'Registrar Usuario', icon: 'pi pi-user-plus', route: 'register' },
+        ]
+    }
+];
+
+// Función para gestionar el click
+const handleLinkClick = (routeStr) => {
+    // Emitimos el cierre para móviles
+    emit('item-click');
+    
+    // Si la ruta es '#', podemos prevenir o manejar algo aquí
+    if (routeStr === '#') {
+        console.log('Ruta no definida');
+    }
+};
+</script>
+
+<template>
+    <aside 
+        :class="[
+            isVisible ? 'w-64 translate-x-0' : 'w-0 -translate-x-full lg:w-0',
+            'bg-slate-100 text-slate-700 transition-all duration-300 fixed lg:relative z-40 h-full border-r border-slate-200 flex flex-col shadow-2xl lg:shadow-none overflow-hidden'
+        ]"
+    >
+        <div class="h-16 flex items-center px-6 bg-slate-200/50 border-b border-slate-200 shrink-0">
+            <i class="pi pi-desktop text-indigo-600 mr-3 text-xl font-bold"></i>
+            <span class="font-black text-slate-800 tracking-tighter text-xl">DemoApp</span>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-6 overflow-y-auto">
+            <div v-for="group in menuGroups" :key="group.title">
+                <p v-if="isVisible" class="text-[10px] font-bold uppercase tracking-[2px] text-slate-400 mb-4 px-2">
+                    {{ group.title }}
+                </p>
+                <div class="space-y-1">
+                    <Link 
+                        v-for="item in group.items" 
+                        :key="item.label"
+                        :href="item.route !== '#' ? route(item.route) : '#'"
+                        @click="handleLinkClick(item.route)"
+                        class="flex items-center gap-3 p-3 rounded-xl hover:bg-white hover:text-indigo-600 hover:shadow-sm border border-transparent hover:border-slate-200 transition-all group"
+                    >
+                        <i :class="[item.icon, 'text-lg text-slate-400 group-hover:text-indigo-600']"></i>
+                        <span v-if="isVisible" class="text-sm font-semibold">{{ item.label }}</span>
+                    </Link>
+                </div>
+            </div>
+        </nav>
+    </aside>
+</template>
 ````
 * Footer.vue
+````
+<template>
+    <footer class="h-10 bg-white border-t border-slate-200 flex items-center justify-between px-6 text-[10px] text-slate-400 font-bold uppercase tracking-widest shrink-0">
+        <div>&copy; 2026 <span class="text-indigo-600 italic">Demo-App</span></div>
+        <div class="flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+            Sistema en Línea
+        </div>
+    </footer>
+</template>
+````
 ## Crear el componente AdminLayout.vue
 Rvisar archivos de ruta auth.web, web.php
